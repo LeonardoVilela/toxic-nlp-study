@@ -14,7 +14,7 @@ import seaborn as sns
 import torch
 import torch_xla.core.xla_model as xm
 
-device = xm.xla_device()
+#device = xm.xla_device()
 #from simpletransformers.classification import ClassificationModel
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM
@@ -57,7 +57,7 @@ class BertTokenizer(object):
 
 #rodar no dataset e ver a precisao media disso
 df_told = pd.read_csv('../ToLD-BR.csv')
-df_told
+print("told acquired")
 
 y =[]
 for i in range(len(df_told)):
@@ -65,15 +65,13 @@ for i in range(len(df_told)):
     y.append(1)
   else:
     y.append(df_told.iloc[i,1:].sum())
-np.unique(y)
 df_told['bin_class'] = y
 df_told = df_told[0:5000]
-
+print("told bin acquired")
 df_sub_a = df_told[df_told['bin_class']==0].iloc[0:250]
 df_sub_b = df_told[df_told['bin_class']==1].iloc[0:250]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
-df_full
 
 from collections import Counter
 
@@ -82,19 +80,18 @@ print(counts)
 
 _instance =BertTokenizer(text=list(df_full['text']))
 X_train = _instance.get()
-
+print("X_train acquired")
 y_train = df_full['bin_class']#.iloc[0:250]
 
 df_sub_a = df_told[df_told['bin_class']==0].iloc[251:350]
 df_sub_b = df_told[df_told['bin_class']==1].iloc[251:350]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
-df_full
 y_test = df_full['bin_class']#.iloc[250:375]
 
 _instance =BertTokenizer(text=list(df_full['text']))
 X_test = _instance.get()
-
+print("X_test acquired")
 from sklearn.model_selection import RandomizedSearchCV
 clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=100)
 # Number of trees in random forest
@@ -121,7 +118,7 @@ rf_random = RandomizedSearchCV(estimator = clf, param_distributions = random_gri
 # Fit the random search model
 rf_random.fit(X_train, y_train)
 # clf.fit(X_train, y_train)
-
+print("RF model acquired")
 clf = rf_random.best_estimator_
 y_pred = clf.predict(X_test)
 #y_test = df_full['bin_class'].iloc[250:375]
@@ -137,7 +134,7 @@ conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
 ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
-plt.savefig("seaborn_plot.png", format='png')
+plt.savefig("confusionmatrix_told.png", format='png')
 
 # df_told = df_told_full.iloc[0:1000,:]
 
@@ -164,7 +161,7 @@ plt.savefig("seaborn_plot.png", format='png')
 # sns.heatmap(conf_matrix, annot=True)
 
 df_hate = pd.read_csv('../2019-05-28_portuguese_hate_speech_binary_classification.csv')
-df_hate
+print("df_hate acquired")
 
 df_sub_hate = df_hate.iloc[0:1000,:]
 
@@ -185,7 +182,10 @@ print('F1 Score: %.3f' % f1_score(y_test, y_pred))
 
 conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
 #plt.figure(figsize = (10,7))
-sns.heatmap(conf_matrix, annot=True)
+ax =sns.heatmap(conf_matrix, annot=True)
+
+# save the plot as PDF file
+plt.savefig("confusionmatrix_hate.png", format='png')
 
 #divir dataset em treino-teste-validacao e testar o modelo (ver a acuracia) ok
 # fazer o teste no TOLD e no outro e ver como o modelo lida ok
