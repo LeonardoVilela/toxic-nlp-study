@@ -12,7 +12,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_sc
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
-import torch_xla_py.xla_model as xm
+import torch_xla.xla_model as xm
 
 device = xm.xla_device()
 #from simpletransformers.classification import ClassificationModel
