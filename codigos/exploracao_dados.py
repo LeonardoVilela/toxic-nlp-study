@@ -27,8 +27,8 @@ class BertTokenizer(object):
     def __init__(self, text=[]):
         self.text = text
         # Load pretrained model/tokenizer
-        self.tokenizer = tokenizer.to(device)
-        self.model = model.to(device)
+        self.tokenizer = tokenizer#.to(device)
+        self.model = model#.to(device)
     def get(self):
         df = pd.DataFrame(data={"text":self.text})
         tokenized = df["text"].apply((lambda x: self.tokenizer.encode(x, add_special_tokens=True)))
