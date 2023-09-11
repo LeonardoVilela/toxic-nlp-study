@@ -38,9 +38,9 @@ class BertTokenizer(object):
                 max_len = len(i)
         padded = np.array([i + [0]*(max_len-len(i)) for i in tokenized.values])
         attention_mask = np.where(padded != 0, 1, 0)
-        input_ids = torch.tensor(padded,device = device)
-        attention_mask = torch.tensor(attention_mask,device = device)
-        with torch.no_grad(device=device): last_hidden_states = self.model(input_ids, attention_mask=attention_mask)
+        input_ids = torch.tensor(padded)#,device = device)
+        attention_mask = torch.tensor(attention_mask)#,device = devic)
+        with torch.no_grad(): last_hidden_states = self.model(input_ids, attention_mask=attention_mask)
         features = last_hidden_states[0][:, 0, :].numpy()
         return features
 
