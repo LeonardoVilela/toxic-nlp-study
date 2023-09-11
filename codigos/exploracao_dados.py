@@ -14,8 +14,8 @@ import seaborn as sns
 import torch
 import torch_xla.core.xla_model as xm
 
-device = xm.xla_device()
-torch.arange(0, 100, device=device)
+# device = xm.xla_device()
+# torch.arange(0, 100, device=device)
 #from simpletransformers.classification import ClassificationModel
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM
