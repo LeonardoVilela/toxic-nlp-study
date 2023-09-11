@@ -61,7 +61,7 @@ for i in range(len(df_told)):
   else:
     y.append(df_told.iloc[i,1:].sum())
 df_told['bin_class'] = y
-df_told = df_told[0:5000]
+# df_told = df_told[0:5000]
 print("told bin acquired")
 df_sub_a = df_told[df_told['bin_class']==0].iloc[0:4000]
 df_sub_b = df_told[df_told['bin_class']==1].iloc[0:4000]
