@@ -45,13 +45,6 @@ class BertTokenizer(object):
         features = last_hidden_states[0][:, 0, :].numpy()
         return features
 
-#model = ClassificationModel("distilbert", "/content/drive/MyDrive/TCC/toxic_bert_model",use_cuda=False)
-
-#predictions, outputs = model.predict(["eu estava andando na rua e vi dois homens se beijando, achei nojento demais"])
-#predictions, outputs = model.predict(["marcelo é um racista"])
-#predictions, outputs = model.predict(["seu deus odeia gays"])#/seu Deus odeia gays
-#predictions, outputs = model.predict(["essas travestis são muito massa"])
-
 
 #print("Predictions:", predictions)
 #print("Outputs:", outputs)
