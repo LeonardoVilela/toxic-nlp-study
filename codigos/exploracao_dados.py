@@ -14,7 +14,7 @@ import seaborn as sns
 import torch
 import torch_xla.core.xla_model as xm
 
-#device = xm.xla_device()
+device = xm.xla_device()
 #from simpletransformers.classification import ClassificationModel
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM
@@ -27,8 +27,8 @@ class BertTokenizer(object):
     def __init__(self, text=[]):
         self.text = text
         # Load pretrained model/tokenizer
-        self.tokenizer = tokenizer
-        self.model = model
+        self.tokenizer = tokenizer.to(device)
+        self.model = model.to(device)
     def get(self):
         df = pd.DataFrame(data={"text":self.text})
         tokenized = df["text"].apply((lambda x: self.tokenizer.encode(x, add_special_tokens=True)))
@@ -38,8 +38,8 @@ class BertTokenizer(object):
                 max_len = len(i)
         padded = np.array([i + [0]*(max_len-len(i)) for i in tokenized.values])
         attention_mask = np.where(padded != 0, 1, 0)
-        input_ids = torch.tensor(padded)#,device = device)
-        attention_mask = torch.tensor(attention_mask)#,device = devic)
+        input_ids = torch.tensor(padded).to(device)#,device = device)
+        attention_mask = torch.tensor(attention_mask).to(device)#,device = devic)
         with torch.no_grad(): last_hidden_states = self.model(input_ids, attention_mask=attention_mask)
         features = last_hidden_states[0][:, 0, :].numpy()
         return features
