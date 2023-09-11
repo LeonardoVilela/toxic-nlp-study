@@ -12,6 +12,9 @@ from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_sc
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
+import torch_xla_py.xla_model as xm
+
+device = xm.xla_device()
 #from simpletransformers.classification import ClassificationModel
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM
@@ -35,9 +38,9 @@ class BertTokenizer(object):
                 max_len = len(i)
         padded = np.array([i + [0]*(max_len-len(i)) for i in tokenized.values])
         attention_mask = np.where(padded != 0, 1, 0)
-        input_ids = torch.tensor(padded)
-        attention_mask = torch.tensor(attention_mask)
-        with torch.no_grad(): last_hidden_states = self.model(input_ids, attention_mask=attention_mask)
+        input_ids = torch.tensor(padded,device = device)
+        attention_mask = torch.tensor(attention_mask,device = device)
+        with torch.no_grad(): last_hidden_states = self.model(input_ids, attention_mask=attention_mask,device = device)
         features = last_hidden_states[0][:, 0, :].numpy()
         return features
 
@@ -171,7 +174,6 @@ y_test = list(df_sub_hate['hatespeech_comb'])
 # from IPython.display import clear_output
 y_pred = []
 for i in range(len(X_test)):
-  clear_output(wait=True)
   print(f'{round((i/len(X_test))*100,2)}%')
   predictions, outputs = model.predict(X_test[i])
   y_pred.append(predictions[0])
