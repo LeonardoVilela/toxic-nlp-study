@@ -19,9 +19,9 @@ device = xm.xla_device()
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 
-tokenizer = AutoTokenizer.from_pretrained("/../bert-base-portuguese-cased")
+tokenizer = AutoTokenizer.from_pretrained("../bert-base-portuguese-cased")
 
-model = AutoModelForMaskedLM.from_pretrained("/../bert-base-portuguese-cased")
+model = AutoModelForMaskedLM.from_pretrained("../bert-base-portuguese-cased")
 
 class BertTokenizer(object):
     def __init__(self, text=[]):
@@ -56,7 +56,7 @@ class BertTokenizer(object):
 #print("Outputs:", outputs)
 
 #rodar no dataset e ver a precisao media disso
-df_told = pd.read_csv('/../ToLD-BR.csv')
+df_told = pd.read_csv('../ToLD-BR.csv')
 df_told
 
 y =[]
@@ -163,7 +163,7 @@ plt.savefig("seaborn_plot.png", format='png')
 # #plt.figure(figsize = (10,7))
 # sns.heatmap(conf_matrix, annot=True)
 
-df_hate = pd.read_csv('/../2019-05-28_portuguese_hate_speech_binary_classification.csv')
+df_hate = pd.read_csv('../2019-05-28_portuguese_hate_speech_binary_classification.csv')
 df_hate
 
 df_sub_hate = df_hate.iloc[0:1000,:]
