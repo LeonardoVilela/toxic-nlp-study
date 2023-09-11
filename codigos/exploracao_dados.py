@@ -62,8 +62,8 @@ for i in range(len(df_told)):
 df_told['bin_class'] = y
 df_told = df_told[0:5000]
 print("told bin acquired")
-df_sub_a = df_told[df_told['bin_class']==0].iloc[0:250]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[0:250]
+df_sub_a = df_told[df_told['bin_class']==0].iloc[0:4000]
+df_sub_b = df_told[df_told['bin_class']==1].iloc[0:4000]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 
@@ -77,8 +77,8 @@ X_train = _instance.get()
 print("X_train acquired")
 y_train = df_full['bin_class']#.iloc[0:250]
 
-df_sub_a = df_told[df_told['bin_class']==0].iloc[251:350]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[251:350]
+df_sub_a = df_told[df_told['bin_class']==0].iloc[4001:5000]
+df_sub_b = df_told[df_told['bin_class']==1].iloc[4001:5000]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 y_test = df_full['bin_class']#.iloc[250:375]
@@ -108,12 +108,18 @@ random_grid = {'n_estimators': n_estimators,
                'min_samples_split': min_samples_split,
                'min_samples_leaf': min_samples_leaf,
                'bootstrap': bootstrap}
-rf_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1)
+rf_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 50, cv = 5, verbose=10, random_state=42, n_jobs = -1)
 # Fit the random search model
 rf_random.fit(X_train, y_train)
 # clf.fit(X_train, y_train)
 print("RF model acquired")
 clf = rf_random.best_estimator_
+import pickle
+
+filename = "rf_model.pickle"
+
+# save model
+pickle.dump(clf, open(filename, "wb"))
 y_pred = clf.predict(X_test)
 #y_test = df_full['bin_class'].iloc[250:375]
 print('Precision: %.3f' % precision_score(y_test, y_pred))
