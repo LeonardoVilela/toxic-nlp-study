@@ -165,7 +165,7 @@ clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
 df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
 
-df_sub_hate = df_hate#.iloc[0:1000,:]
+df_sub_hate = df_hate.iloc[0:1000,:]
 
 X_test_hate = list(df_sub_hate['text'])
 _instance =BertTokenizer(text=X_test_hate)
@@ -189,7 +189,7 @@ conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
 ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
-plt.savefig("confusionmatrix_hate.png", format='png')
+plt.savefig("confusionmatrix_hate_sub1000.png", format='png')
 
 #divir dataset em treino-teste-validacao e testar o modelo (ver a acuracia) ok
 # fazer o teste no TOLD e no outro e ver como o modelo lida ok
