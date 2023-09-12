@@ -73,8 +73,8 @@ from collections import Counter
 counts = Counter(df_full['bin_class'])
 print(counts)
 
-_instance =BertTokenizer(text=list(df_full['text']))
-X_train = _instance.get()
+#_instance =BertTokenizer(text=list(df_full['text']))
+#X_train = _instance.get()
 print("X_train acquired")
 y_train = df_full['bin_class']#.iloc[0:250]
 
@@ -84,11 +84,11 @@ df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 y_test = df_full['bin_class']#.iloc[250:375]
 
-_instance =BertTokenizer(text=list(df_full['text']))
-X_test = _instance.get()
+#_instance =BertTokenizer(text=list(df_full['text']))
+#X_test = _instance.get()
 print("X_test acquired")
 from sklearn.model_selection import RandomizedSearchCV
-clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=500)
+#clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=500)
 # Number of trees in random forest
 n_estimators = [int(x) for x in np.linspace(start = 100, stop = 1000, num = 100)]
 # Number of features to consider at every split
@@ -112,7 +112,7 @@ random_grid = {'n_estimators': n_estimators,
 rf_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 3, cv = 3, verbose=10, random_state=42, n_jobs = -1)
 # Fit the random search model
 # rf_random.fit(X_train, y_train)
-clf.fit(X_train, y_train)
+#clf.fit(X_train, y_train)
 print("RF model acquired")
 # clf = rf_random.best_estimator_
 import pickle
@@ -120,7 +120,8 @@ import pickle
 filename = "rf_model_nors.pickle"
 
 # save model
-pickle.dump(clf, open(filename, "wb"))
+clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
+#pickle.dump(clf, open(filename, "wb"))
 y_pred = clf.predict(X_test)
 #y_test = df_full['bin_class'].iloc[250:375]
 print('Precision: %.3f' % precision_score(y_test, y_pred))
@@ -161,7 +162,7 @@ plt.savefig("confusionmatrix_told.png", format='png')
 # #plt.figure(figsize = (10,7))
 # sns.heatmap(conf_matrix, annot=True)
 
-df_hate = pd.read_csv('../2019-05-28_portuguese_hate_speech_binary_classification.csv')
+df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
 
 df_sub_hate = df_hate.iloc[0:500,:]
