@@ -166,6 +166,8 @@ df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
 
 df_sub_hate = df_hate.iloc[0:1000,:]
+counts = Counter(df_sub_hate['hatespeech_comb'])
+print(counts)
 
 X_test_hate = list(df_sub_hate['text'])
 _instance =BertTokenizer(text=X_test_hate)
