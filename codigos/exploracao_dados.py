@@ -109,7 +109,7 @@ random_grid = {'n_estimators': n_estimators,
                'min_samples_split': min_samples_split,
                'min_samples_leaf': min_samples_leaf,
                'bootstrap': bootstrap}
-rf_random = RandomizedSearchCV(estimator = clf,scoring =scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 80, cv = 5, verbose=10, random_state=42, n_jobs = -1)
+rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 80, cv = 5, verbose=10, random_state=42, n_jobs = -1)
 # Fit the random search model
 rf_random.fit(X_train, y_train)
 #clf.fit(X_train, y_train)
