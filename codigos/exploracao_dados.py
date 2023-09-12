@@ -123,7 +123,6 @@ filename = "rf_model.pickle"
 # clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
 pickle.dump(clf, open(filename, "wb"))
 y_pred = clf.predict(X_test)
-y_test = df_full['bin_class'].iloc[250:375]
 print('Precision: %.3f' % precision_score(y_test, y_pred))
 print('Recall: %.3f' % recall_score(y_test, y_pred))
 print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
@@ -160,7 +159,6 @@ filename = "xg_model.pickle"
 # clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
 pickle.dump(xg_clf, open(filename, "wb"))
 y_pred = xg_clf.predict(X_test)
-y_test = df_full['bin_class'].iloc[250:375]
 print('Precision: %.3f' % precision_score(y_test, y_pred))
 print('Recall: %.3f' % recall_score(y_test, y_pred))
 print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
@@ -177,15 +175,17 @@ plt.savefig("confusionmatrix_told_xg_rs.png", format='png')
 
 df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
+counts = Counter(df_hate['hatespeech_comb'])
+print(f'full hate: {counts}')
 
-df_sub_hate = df_hate#.iloc[0:1000,:]
+df_sub_hate = df_hate.iloc[0:1000,:]
 counts = Counter(df_sub_hate['hatespeech_comb'])
-print(counts)
+print(f'sub: {counts}')
 
-X_test_hate = list(df_sub_hate['text'])
+X_test_hate = list(df_hate['text'])
 _instance =BertTokenizer(text=X_test_hate)
 X_test_hate = _instance.get()
-y_test = list(df_sub_hate['hatespeech_comb'])
+y_test = list(df_hate['hatespeech_comb'])
 
 y_pred = clf.predict(X_test_hate)
 
@@ -202,28 +202,19 @@ ax =sns.heatmap(conf_matrix, annot=True)
 # save the plot as PDF file
 plt.savefig("confusionmatrix_hate_rf_rs.png", format='png')
 
-df_sub_hate = df_hate.iloc[0:1000,:]
-counts = Counter(df_sub_hate['hatespeech_comb'])
-print(counts)
+X_test_hate_sub = list(df_sub_hate['text'])
+_instance =BertTokenizer(text=X_test_hate_sub)
+X_test_hate_sub = _instance.get()
+y_test_sub = list(df_sub_hate['hatespeech_comb'])
 
-X_test_hate = list(df_sub_hate['text'])
-_instance =BertTokenizer(text=X_test_hate)
-X_test_hate = _instance.get()
-y_test = list(df_sub_hate['hatespeech_comb'])
+y_pred = clf.predict(X_test_hate_sub)
 
-# from IPython.display import clear_output
-y_pred = clf.predict(X_test_hate)
-# for i in range(len(X_test)):
-#   #print(f'{round((i/len(X_test))*100,2)}%')
-#   predictions, outputs = model.predict(X_test[i])
-#   y_pred.append(predictions[0])
+print('Precision: %.3f' % precision_score(y_test_sub, y_pred))
+print('Recall: %.3f' % recall_score(y_test_sub, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test_sub, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test_sub, y_pred))
 
-print('Precision: %.3f' % precision_score(y_test, y_pred))
-print('Recall: %.3f' % recall_score(y_test, y_pred))
-print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-print('F1 Score: %.3f' % f1_score(y_test, y_pred))
-
-conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+conf_matrix = confusion_matrix(y_true=y_test_sub, y_pred=y_pred)
 #plt.figure(figsize = (10,7))
 ax =sns.heatmap(conf_matrix, annot=True)
 
@@ -245,28 +236,14 @@ ax =sns.heatmap(conf_matrix, annot=True)
 # save the plot as PDF file
 plt.savefig("confusionmatrix_hate_xg_rs.png", format='png')
 
-df_sub_hate = df_hate.iloc[0:1000,:]
-counts = Counter(df_sub_hate['hatespeech_comb'])
-print(counts)
+y_pred = clf.predict(X_test_hate_sub)
 
-X_test_hate = list(df_sub_hate['text'])
-_instance =BertTokenizer(text=X_test_hate)
-X_test_hate = _instance.get()
-y_test = list(df_sub_hate['hatespeech_comb'])
+print('Precision: %.3f' % precision_score(y_test_sub, y_pred))
+print('Recall: %.3f' % recall_score(y_test_sub, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test_sub, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test_sub, y_pred))
 
-# from IPython.display import clear_output
-y_pred = clf.predict(X_test_hate)
-# for i in range(len(X_test)):
-#   #print(f'{round((i/len(X_test))*100,2)}%')
-#   predictions, outputs = model.predict(X_test[i])
-#   y_pred.append(predictions[0])
-
-print('Precision: %.3f' % precision_score(y_test, y_pred))
-print('Recall: %.3f' % recall_score(y_test, y_pred))
-print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-print('F1 Score: %.3f' % f1_score(y_test, y_pred))
-
-conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+conf_matrix = confusion_matrix(y_true=y_test_sub, y_pred=y_pred)
 #plt.figure(figsize = (10,7))
 ax =sns.heatmap(conf_matrix, annot=True)
 
