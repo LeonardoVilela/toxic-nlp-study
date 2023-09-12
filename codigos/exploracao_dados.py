@@ -140,11 +140,11 @@ plt.savefig("confusionmatrix_told_rf_rs.png", format='png')
 
 classifier = xgboost.XGBClassifier()
 random_grid = {
- “learning_rate” : [x for x in np.linspace(start = 1e-6, stop = 1e-2, num = 1000)],
- “max_depth” : [int(x) for x in np.linspace(10, 5000, num = 1000)],
- “min_child_weight” : [int(x) for x in np.linspace(1, 500, num = 500)],
- “gamma”: [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)],
- “colsample_bytree” : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
+ "learning_rate" : [x for x in np.linspace(start = 1e-6, stop = 1e-2, num = 1000)],
+ "max_depth" : [int(x) for x in np.linspace(10, 5000, num = 1000)],
+ "min_child_weight" : [int(x) for x in np.linspace(1, 500, num = 500)],
+ "gamma": [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)],
+ "colsample_bytree" : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
 }
 xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = 80, cv = 5, verbose=10, random_state=42, n_jobs = -1)
 # Fit the random search model
