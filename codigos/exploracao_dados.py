@@ -88,7 +88,7 @@ y_test = df_full['bin_class']#.iloc[250:375]
 #X_test = _instance.get()
 print("X_test acquired")
 from sklearn.model_selection import RandomizedSearchCV
-#clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=500)
+clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=500)
 # Number of trees in random forest
 n_estimators = [int(x) for x in np.linspace(start = 100, stop = 1000, num = 100)]
 # Number of features to consider at every split
