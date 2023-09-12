@@ -90,11 +90,11 @@ print("X_test acquired")
 from sklearn.model_selection import RandomizedSearchCV
 clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=100)
 # Number of trees in random forest
-n_estimators = [int(x) for x in np.linspace(start = 100, stop = 5000, num = 100)]
+n_estimators = [int(x) for x in np.linspace(start = 100, stop = 1000, num = 100)]
 # Number of features to consider at every split
 max_features = ['log2', 'sqrt',None]
 # Maximum number of levels in tree
-max_depth = [int(x) for x in np.linspace(10, 1000, num = 100)]
+max_depth = [int(x) for x in np.linspace(10, 100, num = 10)]
 max_depth.append(None)
 # Minimum number of samples required to split a node
 min_samples_split = [int(x) for x in np.linspace(1, 100, num = 100)]
