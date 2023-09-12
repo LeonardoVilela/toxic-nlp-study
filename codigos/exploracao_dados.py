@@ -73,8 +73,8 @@ from collections import Counter
 counts = Counter(df_full['bin_class'])
 print(counts)
 
-#_instance =BertTokenizer(text=list(df_full['text']))
-#X_train = _instance.get()
+_instance =BertTokenizer(text=list(df_full['text']))
+X_train = _instance.get()
 print("X_train acquired")
 y_train = df_full['bin_class']#.iloc[0:250]
 
@@ -84,22 +84,22 @@ df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 y_test = df_full['bin_class']#.iloc[250:375]
 
-#_instance =BertTokenizer(text=list(df_full['text']))
-#X_test = _instance.get()
+_instance =BertTokenizer(text=list(df_full['text']))
+X_test = _instance.get()
 print("X_test acquired")
 from sklearn.model_selection import RandomizedSearchCV
 clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=500)
 # Number of trees in random forest
-n_estimators = [int(x) for x in np.linspace(start = 100, stop = 1000, num = 100)]
+n_estimators = [int(x) for x in np.linspace(start = 100, stop = 5000, num = 1000)]
 # Number of features to consider at every split
 max_features = ['log2', 'sqrt',None]
 # Maximum number of levels in tree
-max_depth = [int(x) for x in np.linspace(10, 100, num = 10)]
+max_depth = [int(x) for x in np.linspace(10, 5000, num = 1000)]
 max_depth.append(None)
 # Minimum number of samples required to split a node
-min_samples_split = [int(x) for x in np.linspace(1, 100, num = 100)]
+min_samples_split = [int(x) for x in np.linspace(1, 100, num = 1000)]
 # Minimum number of samples required at each leaf node
-min_samples_leaf = [int(x) for x in np.linspace(10, 100, num = 100)]
+min_samples_leaf = [int(x) for x in np.linspace(10, 100, num = 1000)]
 # Method of selecting samples for training each tree
 bootstrap = [True, False]
 # Create the random grid
@@ -109,58 +109,71 @@ random_grid = {'n_estimators': n_estimators,
                'min_samples_split': min_samples_split,
                'min_samples_leaf': min_samples_leaf,
                'bootstrap': bootstrap}
-rf_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 3, cv = 3, verbose=10, random_state=42, n_jobs = -1)
+rf_random = RandomizedSearchCV(estimator = clf,scoring =scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 80, cv = 5, verbose=10, random_state=42, n_jobs = -1)
 # Fit the random search model
-# rf_random.fit(X_train, y_train)
+rf_random.fit(X_train, y_train)
 #clf.fit(X_train, y_train)
 print("RF model acquired")
-# clf = rf_random.best_estimator_
+clf = rf_random.best_estimator_
 import pickle
 
-filename = "rf_model_nors.pickle"
+filename = "rf_model.pickle"
 
 # save model
-clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
-#pickle.dump(clf, open(filename, "wb"))
-# y_pred = clf.predict(X_test)
-#y_test = df_full['bin_class'].iloc[250:375]
-# print('Precision: %.3f' % precision_score(y_test, y_pred))
-# print('Recall: %.3f' % recall_score(y_test, y_pred))
-# print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-# print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+# clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
+pickle.dump(clf, open(filename, "wb"))
+y_pred = clf.predict(X_test)
+y_test = df_full['bin_class'].iloc[250:375]
+print('Precision: %.3f' % precision_score(y_test, y_pred))
+print('Recall: %.3f' % recall_score(y_test, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test, y_pred))
 
-# conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
-#plt.figure(figsize = (10,7))
-# sns.heatmap(conf_matrix, annot=True)
+conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+plt.figure(figsize = (10,7))
+sns.heatmap(conf_matrix, annot=True)
 
-# ax =sns.heatmap(conf_matrix, annot=True)
+ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
-# plt.savefig("confusionmatrix_told.png", format='png')
+plt.savefig("confusionmatrix_told_rf_rs.png", format='png')
 
-# df_told = df_told_full.iloc[0:1000,:]
+classifier = xgboost.XGBClassifier()
+random_grid = {
+ “learning_rate” : [x for x in np.linspace(start = 1e-6, stop = 1e-2, num = 1000)],
+ “max_depth” : [int(x) for x in np.linspace(10, 5000, num = 1000)],
+ “min_child_weight” : [int(x) for x in np.linspace(1, 500, num = 500)],
+ “gamma”: [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)],
+ “colsample_bytree” : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
+}
+xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = 80, cv = 5, verbose=10, random_state=42, n_jobs = -1)
+# Fit the random search model
+xg_random.fit(X_train, y_train)
+#clf.fit(X_train, y_train)
+print("xg model acquired")
+xg_clf = xg_random.best_estimator_
+import pickle
 
-# X = list(df_told['text'])
-# from IPython.display import clear_output
-# y_pred_told = []
-# for i in range(len(X)):
-#   clear_output(wait=True)
-#   print(f'{round((i/len(X))*100,2)}%')
-#   predictions, outputs = model.predict(X[i])
-#   y_pred_told.append(predictions[0])
-# y_ = np.array(y_pred_told)
-# # np.savetxt("y_pred_told.txt", y_)
+filename = "xg_model.pickle"
 
-# y_pred = y
-# y_test = df_told['bin_class']
-# print('Precision: %.3f' % precision_score(y_test, y_pred_told))
-# print('Recall: %.3f' % recall_score(y_test, y_pred_told))
-# print('Accuracy: %.3f' % accuracy_score(y_test, y_pred_told))
-# print('F1 Score: %.3f' % f1_score(y_test, y_pred_told))
+# save model
+# clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
+pickle.dump(xg_clf, open(filename, "wb"))
+y_pred = xg_clf.predict(X_test)
+y_test = df_full['bin_class'].iloc[250:375]
+print('Precision: %.3f' % precision_score(y_test, y_pred))
+print('Recall: %.3f' % recall_score(y_test, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test, y_pred))
 
-# conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred_told)
-# #plt.figure(figsize = (10,7))
-# sns.heatmap(conf_matrix, annot=True)
+conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+plt.figure(figsize = (10,7))
+sns.heatmap(conf_matrix, annot=True)
+
+ax =sns.heatmap(conf_matrix, annot=True)
+
+# save the plot as PDF file
+plt.savefig("confusionmatrix_told_xg_rs.png", format='png')
 
 df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
@@ -174,12 +187,8 @@ _instance =BertTokenizer(text=X_test_hate)
 X_test_hate = _instance.get()
 y_test = list(df_sub_hate['hatespeech_comb'])
 
-# from IPython.display import clear_output
 y_pred = clf.predict(X_test_hate)
-# for i in range(len(X_test)):
-#   #print(f'{round((i/len(X_test))*100,2)}%')
-#   predictions, outputs = model.predict(X_test[i])
-#   y_pred.append(predictions[0])
+
 
 print('Precision: %.3f' % precision_score(y_test, y_pred))
 print('Recall: %.3f' % recall_score(y_test, y_pred))
@@ -191,7 +200,7 @@ conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
 ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
-plt.savefig("confusionmatrix_hate.png", format='png')
+plt.savefig("confusionmatrix_hate_rf_rs.png", format='png')
 
 df_sub_hate = df_hate.iloc[0:1000,:]
 counts = Counter(df_sub_hate['hatespeech_comb'])
@@ -219,11 +228,47 @@ conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
 ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
-plt.savefig("confusionmatrix_hate_sub1000.png", format='png')
+plt.savefig("confusionmatrix_hate_sub1000_rf_rs.png", format='png')
 
-#divir dataset em treino-teste-validacao e testar o modelo (ver a acuracia) ok
-# fazer o teste no TOLD e no outro e ver como o modelo lida ok
-#ler os artigos ok
-#criar um modelinho nosso aqui (naive-bayes)
-#ver e tentar rodar a opção multilabel
-#testar com o bertimbau
+y_pred = xg_clf.predict(X_test_hate)
+
+
+print('Precision: %.3f' % precision_score(y_test, y_pred))
+print('Recall: %.3f' % recall_score(y_test, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+
+conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+#plt.figure(figsize = (10,7))
+ax =sns.heatmap(conf_matrix, annot=True)
+
+# save the plot as PDF file
+plt.savefig("confusionmatrix_hate_xg_rs.png", format='png')
+
+df_sub_hate = df_hate.iloc[0:1000,:]
+counts = Counter(df_sub_hate['hatespeech_comb'])
+print(counts)
+
+X_test_hate = list(df_sub_hate['text'])
+_instance =BertTokenizer(text=X_test_hate)
+X_test_hate = _instance.get()
+y_test = list(df_sub_hate['hatespeech_comb'])
+
+# from IPython.display import clear_output
+y_pred = clf.predict(X_test_hate)
+# for i in range(len(X_test)):
+#   #print(f'{round((i/len(X_test))*100,2)}%')
+#   predictions, outputs = model.predict(X_test[i])
+#   y_pred.append(predictions[0])
+
+print('Precision: %.3f' % precision_score(y_test, y_pred))
+print('Recall: %.3f' % recall_score(y_test, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+
+conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+#plt.figure(figsize = (10,7))
+ax =sns.heatmap(conf_matrix, annot=True)
+
+# save the plot as PDF file
+plt.savefig("confusionmatrix_hate_sub1000_xg_rs.png", format='png')
