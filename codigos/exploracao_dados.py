@@ -122,21 +122,21 @@ filename = "rf_model_nors.pickle"
 # save model
 clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
 #pickle.dump(clf, open(filename, "wb"))
-y_pred = clf.predict(X_test)
+# y_pred = clf.predict(X_test)
 #y_test = df_full['bin_class'].iloc[250:375]
-print('Precision: %.3f' % precision_score(y_test, y_pred))
-print('Recall: %.3f' % recall_score(y_test, y_pred))
-print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+# print('Precision: %.3f' % precision_score(y_test, y_pred))
+# print('Recall: %.3f' % recall_score(y_test, y_pred))
+# print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+# print('F1 Score: %.3f' % f1_score(y_test, y_pred))
 
-conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+# conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
 #plt.figure(figsize = (10,7))
 # sns.heatmap(conf_matrix, annot=True)
 
-ax =sns.heatmap(conf_matrix, annot=True)
+# ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
-plt.savefig("confusionmatrix_told.png", format='png')
+# plt.savefig("confusionmatrix_told.png", format='png')
 
 # df_told = df_told_full.iloc[0:1000,:]
 
@@ -165,7 +165,7 @@ plt.savefig("confusionmatrix_told.png", format='png')
 df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
 
-df_sub_hate = df_hate.iloc[0:500,:]
+df_sub_hate = df_hate#.iloc[0:1000,:]
 
 X_test_hate = list(df_sub_hate['text'])
 _instance =BertTokenizer(text=X_test_hate)
