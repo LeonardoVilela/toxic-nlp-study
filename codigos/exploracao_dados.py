@@ -78,8 +78,8 @@ X_train = _instance.get()
 print("X_train acquired")
 y_train = df_full['bin_class']#.iloc[0:250]
 
-df_sub_a = df_told[df_told['bin_class']==0].iloc[8000:]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[8000:9300]#.iloc[8000:]
+df_sub_a = df_told[df_told['bin_class']==0].iloc[4001:4301]
+df_sub_b = df_told[df_told['bin_class']==1].iloc[4001:4301]#.iloc[8000:]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 y_test = df_full['bin_class']#.iloc[250:375]
@@ -164,17 +164,19 @@ plt.savefig("confusionmatrix_told.png", format='png')
 df_hate = pd.read_csv('../2019-05-28_portuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
 
-df_sub_hate = df_hate.iloc[0:1000,:]
+df_sub_hate = df_hate.iloc[0:500,:]
 
-X_test = list(df_sub_hate['text'])
+X_test_hate = list(df_sub_hate['text'])
+_instance =BertTokenizer(text=X_test_hate)
+X_test_hate = _instance.get()
 y_test = list(df_sub_hate['hatespeech_comb'])
 
 # from IPython.display import clear_output
-y_pred = []
-for i in range(len(X_test)):
-  print(f'{round((i/len(X_test))*100,2)}%')
-  predictions, outputs = model.predict(X_test[i])
-  y_pred.append(predictions[0])
+y_pred = clf.predict(X_test_hate)
+# for i in range(len(X_test)):
+#   #print(f'{round((i/len(X_test))*100,2)}%')
+#   predictions, outputs = model.predict(X_test[i])
+#   y_pred.append(predictions[0])
 
 print('Precision: %.3f' % precision_score(y_test, y_pred))
 print('Recall: %.3f' % recall_score(y_test, y_pred))
