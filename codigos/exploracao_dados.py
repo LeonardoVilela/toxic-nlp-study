@@ -165,6 +165,34 @@ clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
 df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
 print("df_hate acquired")
 
+df_sub_hate = df_hate#.iloc[0:1000,:]
+counts = Counter(df_sub_hate['hatespeech_comb'])
+print(counts)
+
+X_test_hate = list(df_sub_hate['text'])
+_instance =BertTokenizer(text=X_test_hate)
+X_test_hate = _instance.get()
+y_test = list(df_sub_hate['hatespeech_comb'])
+
+# from IPython.display import clear_output
+y_pred = clf.predict(X_test_hate)
+# for i in range(len(X_test)):
+#   #print(f'{round((i/len(X_test))*100,2)}%')
+#   predictions, outputs = model.predict(X_test[i])
+#   y_pred.append(predictions[0])
+
+print('Precision: %.3f' % precision_score(y_test, y_pred))
+print('Recall: %.3f' % recall_score(y_test, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+
+conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+#plt.figure(figsize = (10,7))
+ax =sns.heatmap(conf_matrix, annot=True)
+
+# save the plot as PDF file
+plt.savefig("confusionmatrix_hate.png", format='png')
+
 df_sub_hate = df_hate.iloc[0:1000,:]
 counts = Counter(df_sub_hate['hatespeech_comb'])
 print(counts)
