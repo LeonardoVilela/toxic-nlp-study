@@ -63,8 +63,8 @@ for i in range(len(df_told)):
 df_told['bin_class'] = y
 # df_told = df_told[0:5000]
 print("told bin acquired")
-df_sub_a = df_told[df_told['bin_class']==0].iloc[0:4000]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[0:4000]
+df_sub_a = df_told[df_told['bin_class']==0].iloc[0:5000]
+df_sub_b = df_told[df_told['bin_class']==1].iloc[0:5000]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 
@@ -78,8 +78,8 @@ X_train = _instance.get()
 print("X_train acquired")
 y_train = df_full['bin_class']#.iloc[0:250]
 
-df_sub_a = df_told[df_told['bin_class']==0].iloc[4001:4301]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[4001:4301]#.iloc[8000:]
+df_sub_a = df_told[df_told['bin_class']==0].iloc[5001:5501]
+df_sub_b = df_told[df_told['bin_class']==1].iloc[5001:5501]#.iloc[8000:]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 y_test = df_full['bin_class']#.iloc[250:375]
