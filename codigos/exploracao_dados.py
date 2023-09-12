@@ -63,8 +63,8 @@ for i in range(len(df_told)):
 df_told['bin_class'] = y
 # df_told = df_told[0:5000]
 print("told bin acquired")
-df_sub_a = df_told[df_told['bin_class']==0].iloc[0:8000]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[0:8000]
+df_sub_a = df_told[df_told['bin_class']==0].iloc[0:4000]
+df_sub_b = df_told[df_told['bin_class']==1].iloc[0:4000]
 df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
 df_full.reset_index(inplace=True)
 
