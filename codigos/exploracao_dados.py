@@ -88,7 +88,7 @@ _instance =BertTokenizer(text=list(df_full['text']))
 X_test = _instance.get()
 print("X_test acquired")
 from sklearn.model_selection import RandomizedSearchCV
-clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=100)
+clf = RandomForestClassifier(max_depth=10000, random_state=42,n_estimators=500)
 # Number of trees in random forest
 n_estimators = [int(x) for x in np.linspace(start = 100, stop = 1000, num = 100)]
 # Number of features to consider at every split
@@ -111,13 +111,13 @@ random_grid = {'n_estimators': n_estimators,
                'bootstrap': bootstrap}
 rf_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 3, cv = 3, verbose=10, random_state=42, n_jobs = -1)
 # Fit the random search model
-rf_random.fit(X_train, y_train)
-# clf.fit(X_train, y_train)
+# rf_random.fit(X_train, y_train)
+clf.fit(X_train, y_train)
 print("RF model acquired")
-clf = rf_random.best_estimator_
+# clf = rf_random.best_estimator_
 import pickle
 
-filename = "rf_model.pickle"
+filename = "rf_model_nors.pickle"
 
 # save model
 pickle.dump(clf, open(filename, "wb"))
