@@ -88,6 +88,7 @@ _instance =BertTokenizer(text=list(df_full['text']))
 X_test = _instance.get()
 print("X_test acquired")
 from sklearn.model_selection import RandomizedSearchCV
+import xgboost
 
 classifier = xgboost.XGBClassifier()
 random_grid = {
