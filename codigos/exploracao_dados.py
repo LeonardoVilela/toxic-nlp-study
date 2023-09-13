@@ -98,7 +98,7 @@ random_grid = {
  "gamma": [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)],
  "colsample_bytree" : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
 }
-xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = 60, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
+xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
 # Fit the random search model
 xg_random.fit(X_train, y_train)
 #clf.fit(X_train, y_train)
@@ -148,7 +148,7 @@ random_grid = {'n_estimators': n_estimators,
                'min_samples_split': min_samples_split,
                'min_samples_leaf': min_samples_leaf,
                'bootstrap': bootstrap}
-rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 60, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
+rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
 # Fit the random search model
 rf_random.fit(X_train, y_train)
 #clf.fit(X_train, y_train)
