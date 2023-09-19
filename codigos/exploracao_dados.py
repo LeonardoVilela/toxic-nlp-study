@@ -80,7 +80,7 @@ def told_dataset(tamanho):
     print(counts)
     return df_full
     
-df_full = told_dataset(3000)
+df_full = told_dataset(1000)
 
 def train_tokens(df_full):
     _instance =BertTokenizer(text=list(df_full['text']))
