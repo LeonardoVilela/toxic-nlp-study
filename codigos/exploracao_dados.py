@@ -14,6 +14,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
 import torch_xla.core.xla_model as xm
+from sklearnex import patch_sklearn
+from collections import Counter
+from sklearn.model_selection import RandomizedSearchCV
+import xgboost
+import pickle
+from sklearn.externals import joblib
+
+patch_sklearn()
 
 # device = xm.xla_device()
 # torch.arange(0, 100, device=device)
@@ -51,44 +59,53 @@ class BertTokenizer(object):
 #print("Outputs:", outputs)
 
 #rodar no dataset e ver a precisao media disso
-df_told = pd.read_csv('../ToLD-BR.csv')
-print("told acquired")
+def told_dataset(tamanho):
+    df_told = pd.read_csv('../ToLD-BR.csv')
+    print("told acquired")
+    
+    y =[]
+    for i in range(len(df_told)):
+      if df_told.iloc[i,1:].sum()>0:
+        y.append(1)
+      else:
+        y.append(df_told.iloc[i,1:].sum())
+    df_told['bin_class'] = y
+    # df_told = df_told[0:5000]
+    print("told bin acquired")
+    df_sub_a = df_told[df_told['bin_class']==0].iloc[0:tamanho]
+    df_sub_b = df_told[df_told['bin_class']==1].iloc[0:tamanho]
+    df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
+    df_full.reset_index(inplace=True)
+    counts = Counter(df_full['bin_class'])
+    print(counts)
+    return df_full
+    
+df_full = told_dataset(3000)
 
-y =[]
-for i in range(len(df_told)):
-  if df_told.iloc[i,1:].sum()>0:
-    y.append(1)
-  else:
-    y.append(df_told.iloc[i,1:].sum())
-df_told['bin_class'] = y
-# df_told = df_told[0:5000]
-print("told bin acquired")
-df_sub_a = df_told[df_told['bin_class']==0].iloc[0:5000]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[0:5000]
-df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
-df_full.reset_index(inplace=True)
+def train_tokens(df_full):
+    _instance =BertTokenizer(text=list(df_full['text']))
+    X_train = _instance.get()
+    print("X_train acquired")
+    y_train = df_full['bin_class']#.iloc[0:250]
+    return X_train,y_train
 
-from collections import Counter
+X_train,y_train = train_tokens(df_full)
 
-counts = Counter(df_full['bin_class'])
-print(counts)
-
-_instance =BertTokenizer(text=list(df_full['text']))
-X_train = _instance.get()
-print("X_train acquired")
-y_train = df_full['bin_class']#.iloc[0:250]
-
-df_sub_a = df_told[df_told['bin_class']==0].iloc[5001:5501]
-df_sub_b = df_told[df_told['bin_class']==1].iloc[5001:5501]#.iloc[8000:]
-df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
-df_full.reset_index(inplace=True)
-y_test = df_full['bin_class']#.iloc[250:375]
-
-_instance =BertTokenizer(text=list(df_full['text']))
-X_test = _instance.get()
-print("X_test acquired")
-from sklearn.model_selection import RandomizedSearchCV
-import xgboost
+def teste_tokens(tamanho):
+    inicio = 5001
+    final = inicio+tamanho
+    df_sub_a = df_told[df_told['bin_class']==0].iloc[inicio:final]
+    df_sub_b = df_told[df_told['bin_class']==1].iloc[inicio:final]#.iloc[8000:]
+    df_full = pd.concat([df_sub_a,df_sub_b])#.reset_index(inplace=True)
+    df_full.reset_index(inplace=True)
+    y_test = df_full['bin_class']#.iloc[250:375]
+    
+    _instance =BertTokenizer(text=list(df_full['text']))
+    X_test = _instance.get()
+    print("X_test acquired")
+    return X_test,y_test
+    
+X_test,y_test=teste_tokens(500)
 
 classifier = xgboost.XGBClassifier()
 random_grid = {
@@ -98,14 +115,15 @@ random_grid = {
  "gamma": [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)],
  "colsample_bytree" : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
 }
-xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
-# Fit the random search model
-xg_random.fit(X_train, y_train)
-#clf.fit(X_train, y_train)
-print("xg model acquired")
-xg_clf = xg_random.best_estimator_
-import pickle
-from sklearn.externals import joblib
+def xgboost_rs(random_grid,classifier):
+    xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
+    # Fit the random search model
+    xg_random.fit(X_train, y_train)
+    #clf.fit(X_train, y_train)
+    print("xg model acquired")
+    xg_clf = xg_random.best_estimator_
+    return xg_clf
+xg_clf = xgboost_rs(random_grid,classifier)
 
 # save model
 joblib.dump(xg_clf, 'xg_model_joblib.pkl')
@@ -148,12 +166,15 @@ random_grid = {'n_estimators': n_estimators,
                'min_samples_split': min_samples_split,
                'min_samples_leaf': min_samples_leaf,
                'bootstrap': bootstrap}
-rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
-# Fit the random search model
-rf_random.fit(X_train, y_train)
-#clf.fit(X_train, y_train)
-print("RF model acquired")
-clf = rf_random.best_estimator_
+def RF_rs(random_grid,clf):
+    rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
+    # Fit the random search model
+    rf_random.fit(X_train, y_train)
+    #clf.fit(X_train, y_train)
+    print("RF model acquired")
+    clf = rf_random.best_estimator_
+    return clf
+clf = RF_rs(random_grid,clf)
 
 filename = "rf_model.pickle"
 
@@ -177,12 +198,13 @@ ax =sns.heatmap(conf_matrix, annot=True)
 # save the plot as PDF file
 plt.savefig("confusionmatrix_told_rf_rs.png", format='png')
 
-
-df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
-print("df_hate acquired")
-counts = Counter(df_hate['hatespeech_comb'])
-print(f'full hate: {counts}')
-
+def hate_dataset():
+    df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
+    print("df_hate acquired")
+    counts = Counter(df_hate['hatespeech_comb'])
+    print(f'full hate: {counts}')
+    return df_hate
+df_hate = hate_dataset
 df_sub_hate = df_hate.iloc[0:1000,:]
 counts = Counter(df_sub_hate['hatespeech_comb'])
 print(f'sub: {counts}')
