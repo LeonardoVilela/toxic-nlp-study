@@ -78,9 +78,9 @@ def told_dataset(tamanho):
     df_full.reset_index(inplace=True)
     counts = Counter(df_full['bin_class'])
     print(counts)
-    return df_full
+    return df_told,df_full
     
-df_full = told_dataset(1000)
+df_told,df_full = told_dataset(1000)
 
 def train_tokens(df_full):
     _instance =BertTokenizer(text=list(df_full['text']))
@@ -91,7 +91,7 @@ def train_tokens(df_full):
 
 X_train,y_train = train_tokens(df_full)
 
-def teste_tokens(tamanho):
+def teste_tokens(df_told,tamanho):
     inicio = 5001
     final = inicio+tamanho
     df_sub_a = df_told[df_told['bin_class']==0].iloc[inicio:final]
@@ -105,7 +105,7 @@ def teste_tokens(tamanho):
     print("X_test acquired")
     return X_test,y_test
     
-X_test,y_test=teste_tokens(500)
+X_test,y_test=teste_tokens(df_told,500)
 
 classifier = xgboost.XGBClassifier()
 random_grid = {
