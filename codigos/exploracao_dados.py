@@ -29,9 +29,9 @@ patch_sklearn()
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 
-tokenizer = AutoTokenizer.from_pretrained("neuralmind/bert-base-portuguese-cased")
+tokenizer = AutoTokenizer.from_pretrained("bert-base-portuguese-cased")
 
-model = AutoModelForMaskedLM.from_pretrained("neuralmind/bert-base-portuguese-cased")
+model = AutoModelForMaskedLM.from_pretrained("bert-base-portuguese-cased")
 
 class BertTokenizer(object):
     def __init__(self, text=[]):
@@ -80,7 +80,7 @@ def told_dataset(tamanho):
     print(counts)
     return df_told,df_full
     
-df_told,df_full = told_dataset(1000)
+df_told,df_full = told_dataset(5000)
 
 def train_tokens(df_full):
     _instance =BertTokenizer(text=list(df_full['text']))
@@ -107,6 +107,8 @@ def teste_tokens(df_told,tamanho):
     
 X_test,y_test=teste_tokens(df_told,500)
 
+n_iter = 30
+
 classifier = xgboost.XGBClassifier()
 random_grid = {
  "learning_rate" : [x for x in np.linspace(start = 1e-6, stop = 1e-2, num = 1000)],
@@ -116,7 +118,7 @@ random_grid = {
  "colsample_bytree" : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
 }
 def xgboost_rs(random_grid,classifier):
-    xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
+    xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = n_iter, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
     # Fit the random search model
     xg_random.fit(X_train, y_train)
     #clf.fit(X_train, y_train)
@@ -167,7 +169,7 @@ random_grid = {'n_estimators': n_estimators,
                'min_samples_leaf': min_samples_leaf,
                'bootstrap': bootstrap}
 def RF_rs(random_grid,clf):
-    rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = 20, cv = 3, verbose=10, random_state=42, n_jobs = -1,refit='f1')
+    rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = n_iter, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
     # Fit the random search model
     rf_random.fit(X_train, y_train)
     #clf.fit(X_train, y_train)
