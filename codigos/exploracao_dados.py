@@ -19,7 +19,7 @@ from collections import Counter
 from sklearn.model_selection import RandomizedSearchCV
 import xgboost
 import pickle
-from sklearn.externals import joblib
+import joblib
 
 patch_sklearn()
 
