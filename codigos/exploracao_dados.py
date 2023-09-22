@@ -29,9 +29,9 @@ patch_sklearn()
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 
-tokenizer = AutoTokenizer.from_pretrained("bert-base-portuguese-cased")
+tokenizer = AutoTokenizer.from_pretrained("../bert-base-portuguese-cased")
 
-model = AutoModelForMaskedLM.from_pretrained("bert-base-portuguese-cased")
+model = AutoModelForMaskedLM.from_pretrained("../bert-base-portuguese-cased")
 
 class BertTokenizer(object):
     def __init__(self, text=[]):
