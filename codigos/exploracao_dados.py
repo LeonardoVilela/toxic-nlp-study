@@ -204,12 +204,12 @@ def hate_dataset():
     df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
     print("df_hate acquired")
     counts = Counter(df_hate['hatespeech_comb'])
-    # print(f'full hate: {counts}')
+    print(f'full hate: {counts}')
     return df_hate
 df_hate = hate_dataset
 df_sub_hate = df_hate.iloc[0:1000,:]
 counts = Counter(df_sub_hate['hatespeech_comb'])
-# print(f"sub: {counts}")
+print(f"sub: {counts}")
 
 X_test_hate = list(df_hate['text'])
 _instance =BertTokenizer(text=X_test_hate)
