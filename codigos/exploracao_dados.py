@@ -173,7 +173,9 @@ random_grid = {'n_estimators': n_estimators,
 def RF_rs(random_grid,clf):
     rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = n_iter, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
     # Fit the random search model
-    rf_random.fit(X_train, y_train)
+    fit_params={"early_stopping_rounds":5
+               }
+    rf_random.fit(X_train, y_train,**fit_params)
     #clf.fit(X_train, y_train)
     print("RF model acquired")
     clf = rf_random.best_estimator_
