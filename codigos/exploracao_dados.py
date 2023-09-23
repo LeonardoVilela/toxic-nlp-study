@@ -120,7 +120,9 @@ random_grid = {
 def xgboost_rs(random_grid,classifier):
     xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = n_iter, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
     # Fit the random search model
-    xg_random.fit(X_train, y_train)
+    fit_params={"early_stopping_rounds":5
+               }
+    xg_random.fit(X_train, y_train,**fit_params)
     #clf.fit(X_train, y_train)
     print("xg model acquired")
     xg_clf = xg_random.best_estimator_
