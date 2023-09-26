@@ -90,7 +90,8 @@ def train_tokens(df_full):
     return X_train,y_train
 
 X_train,y_train = train_tokens(df_full)
-
+print(type(X_train))
+np.savetxt('X_train.txt',X_train)
 def teste_tokens(df_told,tamanho):
     inicio = 5001
     final = inicio+tamanho
