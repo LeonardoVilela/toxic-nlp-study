@@ -83,15 +83,17 @@ def told_dataset(tamanho):
 df_told,df_full = told_dataset(5000)
 
 def train_tokens(df_full):
-    _instance =BertTokenizer(text=list(df_full['text']))
-    X_train = _instance.get()
+    # _instance =BertTokenizer(text=list(df_full['text']))
+    # X_train = _instance.get()
+    X_train = np.loadtxt('X_train.txt')
+    print(X_train.shape)
     print("X_train acquired")
     y_train = df_full['bin_class']#.iloc[0:250]
     return X_train,y_train
 
 X_train,y_train = train_tokens(df_full)
 print(type(X_train))
-np.savetxt('X_train.txt',X_train)
+#np.savetxt('X_train.txt',X_train)
 def teste_tokens(df_told,tamanho):
     inicio = 5001
     final = inicio+tamanho
@@ -107,7 +109,7 @@ def teste_tokens(df_told,tamanho):
     return X_test,y_test
     
 X_test,y_test=teste_tokens(df_told,500)
-
+np.savetxt('X_test.txt',X_test)
 n_iter = 30
 
 classifier = xgboost.XGBClassifier()
