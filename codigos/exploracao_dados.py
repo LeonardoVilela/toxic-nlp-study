@@ -127,7 +127,8 @@ def xgboost_rs(random_grid,classifier):
     # Fit the random search model
     fit_params={"early_stopping_rounds":5
                }
-    xg_random.fit(X_train, y_train,**fit_params)
+    xg_random.set_params(**fit_params)
+    xg_random.fit(X_train, y_train)#,**fit_params)
     #clf.fit(X_train, y_train)
     print("xg model acquired")
     xg_clf = xg_random.best_estimator_
@@ -180,7 +181,8 @@ def RF_rs(random_grid,clf):
     # Fit the random search model
     fit_params={"early_stopping_rounds":5
                }
-    rf_random.fit(X_train, y_train,**fit_params)
+    rf_random.set_params(**fit_params)
+    rf_random.fit(X_train, y_train)#,**fit_params)
     #clf.fit(X_train, y_train)
     print("RF model acquired")
     clf = rf_random.best_estimator_
