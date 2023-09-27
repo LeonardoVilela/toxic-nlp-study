@@ -112,7 +112,7 @@ def teste_tokens(df_told,tamanho):
     
 X_test,y_test=teste_tokens(df_told,500)
 # np.savetxt('X_test.txt',X_test)
-n_iter = 10
+n_iter = 5
 
 classifier = xgboost.XGBClassifier()
 random_grid = {
