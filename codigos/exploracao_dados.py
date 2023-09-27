@@ -21,7 +21,7 @@ import xgboost
 import pickle
 import joblib
 
-patch_sklearn()
+# patch_sklearn()
 
 # device = xm.xla_device()
 # torch.arange(0, 100, device=device)
@@ -112,48 +112,7 @@ def teste_tokens(df_told,tamanho):
     
 X_test,y_test=teste_tokens(df_told,500)
 # np.savetxt('X_test.txt',X_test)
-n_iter = 5
-
-classifier = xgboost.XGBClassifier()
-random_grid = {
- "learning_rate" : [x for x in np.linspace(start = 1e-6, stop = 1e-2, num = 1000)],
- "max_depth" : [int(x) for x in np.linspace(10, 5000, num = 1000)],
- "min_child_weight" : [int(x) for x in np.linspace(1, 500, num = 500)],
- "gamma": [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)],
- "colsample_bytree" : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
-}
-def xgboost_rs(random_grid,classifier):
-    xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = n_iter, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
-    # Fit the random search model
-    fit_params={"early_stopping_rounds":5
-               }
-    # xg_random.set_params(**fit_params)
-    xg_random.fit(X_train, y_train)#,**fit_params)
-    #clf.fit(X_train, y_train)
-    print("xg model acquired")
-    xg_clf = xg_random.best_estimator_
-    return xg_clf
-xg_clf = xgboost_rs(random_grid,classifier)
-
-# save model
-joblib.dump(xg_clf, 'xg_model_joblib.pkl')
-pickle.dump(xg_clf, open("xg_model.sav", "wb"))
-pickle.dump(xg_clf, open("xg_model.pickle", "wb"))
-y_pred = xg_clf.predict(X_test)
-print('Precision: %.3f' % precision_score(y_test, y_pred))
-print('Recall: %.3f' % recall_score(y_test, y_pred))
-print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-print('F1 Score: %.3f' % f1_score(y_test, y_pred))
-
-conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
-plt.figure(figsize = (10,7))
-sns.heatmap(conf_matrix, annot=True)
-
-ax =sns.heatmap(conf_matrix, annot=True)
-
-# save the plot as PDF file
-plt.savefig("confusionmatrix_told_xg_rs.png", format='png')
-
+n_iter = 15
 
 clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=500)
 # Number of trees in random forest
@@ -179,8 +138,6 @@ random_grid = {'n_estimators': n_estimators,
 def RF_rs(random_grid,clf):
     rf_random = RandomizedSearchCV(estimator = clf,scoring = ['accuracy','f1'], param_distributions = random_grid, n_iter = n_iter, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
     # Fit the random search model
-    fit_params={"early_stopping_rounds":5
-               }
     # rf_random.set_params(**fit_params)
     rf_random.fit(X_train, y_train)#,**fit_params)
     #clf.fit(X_train, y_train)
@@ -210,6 +167,45 @@ ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
 plt.savefig("confusionmatrix_told_rf_rs.png", format='png')
+
+classifier = xgboost.XGBClassifier()
+random_grid = {
+ "learning_rate" : [x for x in np.linspace(start = 1e-6, stop = 1e-2, num = 1000)],
+ "max_depth" : [int(x) for x in np.linspace(10, 5000, num = 1000)],
+ "min_child_weight" : [int(x) for x in np.linspace(1, 500, num = 500)],
+ "gamma": [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)],
+ "colsample_bytree" : [x for x in np.linspace(start = 2e-3, stop = 7e-1, num = 100)]
+}
+def xgboost_rs(random_grid,classifier):
+    xg_random = RandomizedSearchCV(estimator = classifier,scoring = ['accuracy','f1'],param_distributions = random_grid, n_iter = n_iter, cv = 5, verbose=10, random_state=42, n_jobs = -1,refit='f1')
+    # Fit the random search model
+    # xg_random.set_params(**fit_params)
+    xg_random.fit(X_train, y_train)#,**fit_params)
+    #clf.fit(X_train, y_train)
+    print("xg model acquired")
+    xg_clf = xg_random.best_estimator_
+    return xg_clf
+xg_clf = xgboost_rs(random_grid,classifier)
+
+# save model
+joblib.dump(xg_clf, 'xg_model_joblib.pkl')
+pickle.dump(xg_clf, open("xg_model.sav", "wb"))
+pickle.dump(xg_clf, open("xg_model.pickle", "wb"))
+y_pred = xg_clf.predict(X_test)
+print('Precision: %.3f' % precision_score(y_test, y_pred))
+print('Recall: %.3f' % recall_score(y_test, y_pred))
+print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+
+conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+plt.figure(figsize = (10,7))
+sns.heatmap(conf_matrix, annot=True)
+
+ax =sns.heatmap(conf_matrix, annot=True)
+
+# save the plot as PDF file
+plt.savefig("confusionmatrix_told_xg_rs.png", format='png')
+
 
 def hate_dataset():
     df_hate = pd.read_csv('../gportuguese_hate_speech_binary_classification.csv')
