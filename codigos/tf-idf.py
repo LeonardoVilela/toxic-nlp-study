@@ -1,33 +1,15 @@
-            # %%
-# !pip install --upgrade pip setuptools wheel
-!pip install transformers
-!pip install unidecode
-!pip install scikit-learn-intelex
-!pip install spacy
-!pip install nltk
-!pip install unidecode
-!pip install seaborn
-!pip install xgboost
-
-# %%
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-import os
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
-# import torch
-# from sklearnex import patch_sklearn
 from collections import Counter
 from sklearn.model_selection import RandomizedSearchCV
 import xgboost
 import pickle
 import joblib
-
-# patch_sklearn()
 
 # device = xm.xla_device()
 # torch.arange(0, 100, device=device)
