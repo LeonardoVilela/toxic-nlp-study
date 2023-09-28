@@ -140,8 +140,8 @@ random_dict_rf = {'n_estimators': [],
 early_stop_flag = 0
 for i in range(n_iter):
     print(f'iteration:{i}, early stopping = {early_stop_flag}')
-    if i>=2:
-        if random_dict_rf['f1'][i-1]>random_dict_rf['f1'][i]:
+     if i>=2:
+        if random_dict_rf['f1'][i-2]>=random_dict_rf['f1'][i-1]:
             early_stop_flag+=1
     if early_stop_flag >=5:
         break
@@ -151,8 +151,8 @@ for i in range(n_iter):
     random_dict_rf['max_features'].append(max_features_)
     max_depth_ = np.random.choice(max_depth)
     random_dict_rf['max_depth'].append(max_depth_)
-    min_samples_split_ = np.random.choice(min_samples_split)
-    random_dict_rf['min_samples_split'].append(min_samples_split_)
+    # min_samples_split_ = np.random.choice(min_samples_split)
+    # random_dict_rf['min_samples_split'].append(min_samples_split_)
     min_samples_leaf_ = np.random.choice(min_samples_leaf)
     random_dict_rf['min_samples_leaf'].append(min_samples_leaf_)
     bootstrap_ = np.random.choice(bootstrap)
@@ -160,7 +160,7 @@ for i in range(n_iter):
     random_grid = {'n_estimators': n_estimators_,
                'max_features': max_features_,
                'max_depth': max_depth_,
-               'min_samples_split': min_samples_split_,
+               # 'min_samples_split': min_samples_split_,
                'min_samples_leaf': min_samples_leaf_,
                'bootstrap': bootstrap_}
     clf = RandomForestClassifier(**random_grid)
@@ -176,13 +176,13 @@ best_iter = random_dict_rf['f1'].index(max(random_dict_rf['f1']))
 n_estimators = random_dict_rf['n_estimators'][best_iter]
 max_features = random_dict_rf['max_features'][best_iter]
 max_depth = random_dict_rf['max_depth'][best_iter]
-min_samples_split = random_dict_rf['min_samples_split'][best_iter]
+# min_samples_split = random_dict_rf['min_samples_split'][best_iter]
 min_samples_leaf = random_dict_rf['min_samples_leaf'][best_iter]
 bootstrap = random_dict_rf['bootstrap'][best_iter]
 random_grid = {'n_estimators': n_estimators_,
              'max_features': max_features_,
              'max_depth': max_depth_,
-             'min_samples_split': min_samples_split_,
+             # 'min_samples_split': min_samples_split_,
              'min_samples_leaf': min_samples_leaf_,
              'bootstrap': bootstrap_}
 clf = RandomForestClassifier(**random_grid)
