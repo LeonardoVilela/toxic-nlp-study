@@ -21,7 +21,7 @@ from nltk.stem.snowball import SnowballStemmer
 from unidecode import unidecode
 
 # %%
-df_told = pd.read_csv('ToLD-BR.csv')
+df_told = pd.read_csv('../ToLD-BR.csv')
 df_told
 
 # %%
