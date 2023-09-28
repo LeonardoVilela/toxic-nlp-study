@@ -36,9 +36,6 @@ df_told['bin_class'] = y
 df_told = df_told#[0:5000]
 
 # %%
-!python -m spacy download pt_core_news_lg
-
-# %%
 nlp = spacy.load('pt_core_news_lg')
 textos = [unidecode(x) for x in list(df_told['text'])]
 textos_tokenized = []
