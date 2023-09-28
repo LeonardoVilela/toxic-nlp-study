@@ -104,10 +104,10 @@ random_dict_rf = {'n_estimators': [],
                 'f1':[],
                  'acc':[]}
 early_stop_flag = 0
-for i in range(n_iter):
+for i in range(0,n_iter):
     print(f'iteration:{i}, early stopping = {early_stop_flag}')
     if i>=2:
-        if random_dict_rf['f1'][i-1]>random_dict_rf['f1'][i]:
+        if random_dict_rf['f1'][i-2]>=random_dict_rf['f1'][i-1]:
             early_stop_flag+=1
     if early_stop_flag >=5:
         break
@@ -135,8 +135,8 @@ for i in range(n_iter):
     y_pred = clf.predict(X_test)
     print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
     random_dict_rf['acc'].append(accuracy_score(y_test, y_pred))
-    print('F1 Score: %.3f' % f1_score(y_test, y_pred))
-    random_dict_rf['f1'].append(f1_score(y_test, y_pred))
+    print('F1 Score: %.3f' % f1_score(y_test, y_pred,average = 'micro'))
+    random_dict_rf['f1'].append(f1_score(y_test, y_pred,average = 'micro')))
     
 best_iter = random_dict_rf['f1'].index(max(random_dict_rf['f1']))
 n_estimators = random_dict_rf['n_estimators'][best_iter]
