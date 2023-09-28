@@ -89,7 +89,7 @@ max_features = ['log2', 'sqrt',None]
 max_depth = [int(x) for x in np.linspace(10, 500, num = 1000)]
 max_depth.append(None)
 # Minimum number of samples required to split a node
-min_samples_split = [int(x) for x in np.linspace(1, 100, num = 100)]
+# min_samples_split = [int(x) for x in np.linspace(1, 100, num = 100)]
 # Minimum number of samples required at each leaf node
 min_samples_leaf = [int(x) for x in np.linspace(10, 100, num = 1000)]
 # Method of selecting samples for training each tree
@@ -98,7 +98,7 @@ bootstrap = [True, False]
 random_dict_rf = {'n_estimators': [],
                'max_features': [],
                'max_depth': [],
-               'min_samples_split': [],
+               # 'min_samples_split': [],
                'min_samples_leaf': [],
                'bootstrap': [],
                 'f1':[],
@@ -117,8 +117,8 @@ for i in range(0,n_iter):
     random_dict_rf['max_features'].append(max_features_)
     max_depth_ = np.random.choice(max_depth)
     random_dict_rf['max_depth'].append(max_depth_)
-    min_samples_split_ = np.random.choice(min_samples_split)
-    random_dict_rf['min_samples_split'].append(min_samples_split_)
+    # min_samples_split_ = np.random.choice(min_samples_split)
+    # random_dict_rf['min_samples_split'].append(min_samples_split_)
     min_samples_leaf_ = np.random.choice(min_samples_leaf)
     random_dict_rf['min_samples_leaf'].append(min_samples_leaf_)
     bootstrap_ = np.random.choice(bootstrap)
@@ -126,7 +126,7 @@ for i in range(0,n_iter):
     random_grid = {'n_estimators': n_estimators_,
                'max_features': max_features_,
                'max_depth': max_depth_,
-               'min_samples_split': min_samples_split_,
+               # 'min_samples_split': min_samples_split_,
                'min_samples_leaf': min_samples_leaf_,
                'bootstrap': bootstrap_}
     clf = RandomForestClassifier(**random_grid)
