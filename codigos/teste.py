@@ -137,33 +137,40 @@ random_dict_rf = {'n_estimators': [],
                'bootstrap': [],
                 'f1':[],
                  'acc':[]}
+early_stop_flag = 0
 for i in range(n_iter):
-  n_estimators_ = np.random.choice(n_estimators)
-  random_dict_rf['n_estimators'].append(n_estimators_)
-  max_features_ = np.random.choice(max_features)
-  random_dict_rf['max_features'].append(max_features_)
-  max_depth_ = np.random.choice(max_depth)
-  random_dict_rf['max_depth'].append(max_depth_)
-  min_samples_split_ = np.random.choice(min_samples_split)
-  random_dict_rf['min_samples_split'].append(min_samples_split_)
-  min_samples_leaf_ = np.random.choice(min_samples_leaf)
-  random_dict_rf['min_samples_leaf'].append(min_samples_leaf_)
-  bootstrap_ = np.random.choice(bootstrap)
-  random_dict_rf['bootstrap'].append(bootstrap_)
-  random_grid = {'n_estimators': n_estimators_,
+    print(f'iteration:{i}, early stopping = {early_stop_flag}')
+    if i>=1:
+        if random_dict_rf['f1'][i-1]>random_dict_rf['f1'][i]:
+            early_stop_flag+=1
+    if early_stop_flag >=5:
+        break
+    n_estimators_ = np.random.choice(n_estimators)
+    random_dict_rf['n_estimators'].append(n_estimators_)
+    max_features_ = np.random.choice(max_features)
+    random_dict_rf['max_features'].append(max_features_)
+    max_depth_ = np.random.choice(max_depth)
+    random_dict_rf['max_depth'].append(max_depth_)
+    min_samples_split_ = np.random.choice(min_samples_split)
+    random_dict_rf['min_samples_split'].append(min_samples_split_)
+    min_samples_leaf_ = np.random.choice(min_samples_leaf)
+    random_dict_rf['min_samples_leaf'].append(min_samples_leaf_)
+    bootstrap_ = np.random.choice(bootstrap)
+    random_dict_rf['bootstrap'].append(bootstrap_)
+    random_grid = {'n_estimators': n_estimators_,
                'max_features': max_features_,
                'max_depth': max_depth_,
                'min_samples_split': min_samples_split_,
                'min_samples_leaf': min_samples_leaf_,
                'bootstrap': bootstrap_}
-  clf = RandomForestClassifier(**random_grid)
-  clf.fit(X_train, y_train)
-  print("RF model acquired")
-  y_pred = clf.predict(X_test)
-  print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-  random_dict_rf['acc'].append(accuracy_score(y_test, y_pred))
-  print('F1 Score: %.3f' % f1_score(y_test, y_pred))
-  random_dict_rf['f1'].append(f1_score(y_test, y_pred))
+    clf = RandomForestClassifier(**random_grid)
+    clf.fit(X_train, y_train)
+    print("RF model acquired")
+    y_pred = clf.predict(X_test)
+    print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+    random_dict_rf['acc'].append(accuracy_score(y_test, y_pred))
+    print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+    random_dict_rf['f1'].append(f1_score(y_test, y_pred))
   
 best_iter = random_dict_rf['f1'].index(max(random_dict_rf['f1']))
 n_estimators = random_dict_rf['n_estimators'][best_iter]
