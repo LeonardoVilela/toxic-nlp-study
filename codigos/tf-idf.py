@@ -142,13 +142,13 @@ best_iter = random_dict_rf['f1'].index(max(random_dict_rf['f1']))
 n_estimators = random_dict_rf['n_estimators'][best_iter]
 max_features = random_dict_rf['max_features'][best_iter]
 max_depth = random_dict_rf['max_depth'][best_iter]
-min_samples_split = random_dict_rf['min_samples_split'][best_iter]
+# min_samples_split = random_dict_rf['min_samples_split'][best_iter]
 min_samples_leaf = random_dict_rf['min_samples_leaf'][best_iter]
 bootstrap = random_dict_rf['bootstrap'][best_iter]
 random_grid = {'n_estimators': n_estimators_,
              'max_features': max_features_,
              'max_depth': max_depth_,
-             'min_samples_split': min_samples_split_,
+             # 'min_samples_split': min_samples_split_,
              'min_samples_leaf': min_samples_leaf_,
              'bootstrap': bootstrap_}
 clf = RandomForestClassifier(**random_grid)
