@@ -140,7 +140,7 @@ random_dict_rf = {'n_estimators': [],
 early_stop_flag = 0
 for i in range(n_iter):
     print(f'iteration:{i}, early stopping = {early_stop_flag}')
-     if i>=2:
+    if i>=2:
         if random_dict_rf['f1'][i-2]>=random_dict_rf['f1'][i-1]:
             early_stop_flag+=1
     if early_stop_flag >=5:
