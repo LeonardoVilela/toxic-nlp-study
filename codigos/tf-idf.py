@@ -89,7 +89,7 @@ max_features = ['log2', 'sqrt',None]
 max_depth = [int(x) for x in np.linspace(10, 500, num = 1000)]
 max_depth.append(None)
 # Minimum number of samples required to split a node
-min_samples_split = [int(x) for x in np.linspace(1, 100, num = 1000)]
+min_samples_split = [int(x) for x in np.linspace(1, 100, num = 100)]
 # Minimum number of samples required at each leaf node
 min_samples_leaf = [int(x) for x in np.linspace(10, 100, num = 1000)]
 # Method of selecting samples for training each tree
