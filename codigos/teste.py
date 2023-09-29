@@ -80,7 +80,7 @@ def told_dataset(tamanho):
     print(counts)
     return df_told,df_full
     
-df_told,df_full = told_dataset(5000)
+df_told,df_full = told_dataset(2000)
 
 def train_tokens(df_full):
     _instance =BertTokenizer(text=list(df_full['text']))
@@ -110,7 +110,7 @@ def teste_tokens(df_told,tamanho):
     print("X_test acquired")
     return X_test,y_test
     
-X_test,y_test=teste_tokens(df_told,500)
+X_test,y_test=teste_tokens(df_told,200)
 # np.savetxt('X_test.txt',X_test)
 n_iter = 15
 
