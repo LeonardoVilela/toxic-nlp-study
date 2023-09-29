@@ -80,12 +80,12 @@ def told_dataset(tamanho):
     print(counts)
     return df_told,df_full
     
-df_told,df_full = told_dataset(2000)
+df_told,df_full = told_dataset(5000)
 
 def train_tokens(df_full):
-    _instance =BertTokenizer(text=list(df_full['text']))
-    X_train = _instance.get()
-    # X_train = np.loadtxt('X_train.txt')
+    # _instance =BertTokenizer(text=list(df_full['text']))
+    # X_train = _instance.get()
+    X_train = np.loadtxt('X_train.txt')
     print(X_train.shape)
     print("X_train acquired")
     y_train = df_full['bin_class']#.iloc[0:250]
@@ -103,14 +103,14 @@ def teste_tokens(df_told,tamanho):
     df_full.reset_index(inplace=True)
     y_test = df_full['bin_class']#.iloc[250:375]
     
-    _instance =BertTokenizer(text=list(df_full['text']))
-    X_test = _instance.get()
-    # X_test = np.loadtxt('X_test.txt')
+    # _instance =BertTokenizer(text=list(df_full['text']))
+    # X_test = _instance.get()
+    X_test = np.loadtxt('X_test.txt')
     print(X_test.shape)
     print("X_test acquired")
     return X_test,y_test
     
-X_test,y_test=teste_tokens(df_told,200)
+X_test,y_test=teste_tokens(df_told,500)
 # np.savetxt('X_test.txt',X_test)
 n_iter = 15
 
