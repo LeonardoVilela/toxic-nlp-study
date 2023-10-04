@@ -83,9 +83,9 @@ def told_dataset(tamanho):
 df_told,df_full = told_dataset(5000)
 
 def train_tokens(df_full):
-    _instance =BertTokenizer(text=list(df_full['text']))
-    X_train = _instance.get()
-    # X_train = np.loadtxt('X_train.txt')
+   # _instance =BertTokenizer(text=list(df_full['text']))
+   # X_train = _instance.get()
+    X_train = np.loadtxt('X_train.txt')
     print(X_train.shape)
     print("X_train acquired")
     y_train = df_full['bin_class']#.iloc[0:250]
@@ -93,7 +93,7 @@ def train_tokens(df_full):
 
 X_train,y_train = train_tokens(df_full)
 print(type(X_train))
-# np.savetxt('X_train.txt',X_train)
+#np.savetxt('X_train.txt',X_train)
 def teste_tokens(df_told,tamanho):
     inicio = 5001
     final = inicio+tamanho
@@ -103,15 +103,15 @@ def teste_tokens(df_told,tamanho):
     df_full.reset_index(inplace=True)
     y_test = df_full['bin_class']#.iloc[250:375]
     
-    _instance =BertTokenizer(text=list(df_full['text']))
-    X_test = _instance.get()
-    # X_test = np.loadtxt('X_test.txt')
+   # _instance =BertTokenizer(text=list(df_full['text']))
+    #X_test = _instance.get()
+    X_test = np.loadtxt('X_test.txt')
     print(X_test.shape)
     print("X_test acquired")
     return X_test,y_test
     
 X_test,y_test=teste_tokens(df_told,500)
-# np.savetxt('X_test.txt',X_test)
+#np.savetxt('X_test.txt',X_test)
 n_iter = 15
 
 clf = RandomForestClassifier(max_depth=100, random_state=42,n_estimators=500)
@@ -138,6 +138,7 @@ random_dict_rf = {'n_estimators': [],
                 'f1':[],
                  'acc':[]}
 early_stop_flag = 0
+f = open("results.txt", 'w')
 for i in range(n_iter):
     print(f'iteration:{i}, early stopping = {early_stop_flag}')
     if i>=2:
@@ -166,7 +167,15 @@ for i in range(n_iter):
     clf = RandomForestClassifier(**random_grid)
     clf.fit(X_train, y_train)
     print("RF model acquired")
+    joblib.dump(clf, f'rf_model_rs_{i}.pkl')
+    pickle.dump(clf, open(f"rf_model_rs_{i}.sav", "wb"))
+    pickle.dump(clf, open(f"rf_model_rs_{i}.pickle", "wb"))
     y_pred = clf.predict(X_test)
+    f.write(f'iteration:{i}, early stopping = {early_stop_flag}')
+    f.write('\n')
+    f.write('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
+    f.write('\n')
+    f.write('F1: %.3f' % f1_score(y_test, y_pred))
     print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
     random_dict_rf['acc'].append(accuracy_score(y_test, y_pred))
     print('F1 Score: %.3f' % f1_score(y_test, y_pred))
