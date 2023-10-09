@@ -84,7 +84,7 @@ def told_dataset(tamanho):
 df_told,df_full = told_dataset(3816)
 
 def train_tokens(df_full):
-    _instance =BertTokenizer(text=list(df_full['text']))
+    _instance = BertTokenizer(text=list(df_full['text']))
     X_train = _instance.get()
     # X_train = np.loadtxt('X_train.txt')
     print(X_train.shape)
@@ -104,7 +104,7 @@ def teste_tokens(df_told,tamanho):
     df_full.reset_index(inplace=True)
     y_test = df_full['bin_class']#.iloc[250:375]
     
-   _instance =BertTokenizer(text=list(df_full['text']))
+    _instance =BertTokenizer(text=list(df_full['text']))
     X_test = _instance.get()
     # X_test = np.loadtxt('X_test.txt')
     print(X_test.shape)
