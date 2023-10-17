@@ -70,7 +70,7 @@ tokenizer = AutoTokenizer.from_pretrained("../bert-base-portuguese-cased")
 # print("Number of accelerators: ", strategy.num_replicas_in_sync)
 
 try:
-    tpu = tf.distribute.cluster_resolver.TPUClusterResolver('grpc://10.164.0.30')
+    tpu = tf.distribute.cluster_resolver.TPUClusterResolver()#'grpc://10.164.0.30')
     print('Running on TPU ', tpu.cluster_spec().as_dict()['worker'])  
     tf.config.experimental_connect_to_cluster(tpu)
     tf.tpu.experimental.initialize_tpu_system(tpu)
