@@ -52,22 +52,31 @@ tokenizer = AutoTokenizer.from_pretrained("../bert-base-portuguese-cased")
 
 # model = AutoModelForMaskedLM.from_pretrained("../bert-base-portuguese-cased")
 
-try:
-    # tpu = tf.distribute.cluster_resolver.TPUClusterResolver() # TPU detection
-    tpu = tf.distribute.cluster_resolver.TPUClusterResolver(tpu='local')
-    # tf.tpu.experimental.initialize_tpu_system(cluster_resolver)
-    # tf.distribute.TPUStrategy(cluster_resolver)
-except ValueError: # If TPU not found
-    tpu = None
+# try:
+#     # tpu = tf.distribute.cluster_resolver.TPUClusterResolver() # TPU detection
+#     tpu = tf.distribute.cluster_resolver.TPUClusterResolver(tpu='local')
+#     # tf.tpu.experimental.initialize_tpu_system(cluster_resolver)
+#     # tf.distribute.TPUStrategy(cluster_resolver)
+# except ValueError: # If TPU not found
+#     tpu = None
 
-if tpu:
+# if tpu:
+#     tf.tpu.experimental.initialize_tpu_system(tpu)
+#     strategy = tf.distribute.experimental.TPUStrategy(tpu, steps_per_run=128)
+#     print('Running on TPU ', tpu.cluster_spec().as_dict()['worker'])  
+# else:
+#     strategy = tf.distribute.get_strategy() # Default strategy that works on CPU and single GPU
+#     print('Running on CPU instead')
+# print("Number of accelerators: ", strategy.num_replicas_in_sync)
+
+try:
+    tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
+    tf.config.experimental_connect_to_cluster(tpu)
     tf.tpu.experimental.initialize_tpu_system(tpu)
-    strategy = tf.distribute.experimental.TPUStrategy(tpu, steps_per_run=128)
-    print('Running on TPU ', tpu.cluster_spec().as_dict()['worker'])  
-else:
-    strategy = tf.distribute.get_strategy() # Default strategy that works on CPU and single GPU
-    print('Running on CPU instead')
-print("Number of accelerators: ", strategy.num_replicas_in_sync)
+    strategy = tf.distribute.experimental.TPUStrategy(tpu)
+except ValueError:
+    strategy = tf.distribute.get_strategy() # for CPU and single GPU
+    print('Number of replicas:', strategy.num_replicas_in_sync)
 
 model_tf = TFBertForSequenceClassification.from_pretrained('../bert-base-portuguese-cased')
 
