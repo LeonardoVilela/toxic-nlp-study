@@ -6,7 +6,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 import seaborn as sns
 import torch
-import torch_xla.core.xla_model as xm
+# import torch_xla.core.xla_model as xm
 from collections import Counter
 import tensorflow as tf
 from unidecode import unidecode
@@ -15,34 +15,34 @@ import time
 
 patch_sklearn()
 
-def move_to_tpu(sample):
+# def move_to_tpu(sample):
 
-    import torch_xla.core.xla_model as xm
+#     import torch_xla.core.xla_model as xm
 
-    device = xm.xla_device()
+#     device = xm.xla_device()
 
-    def _move_to_tpu(tensor):
-        return tensor.to(device)
+#     def _move_to_tpu(tensor):
+#         return tensor.to(device)
 
-    return apply_to_sample(_move_to_tpu, sample)
+#     return apply_to_sample(_move_to_tpu, sample)
 
-def get_tpu_device():
-    return xm.xla_device()
+# def get_tpu_device():
+#     return xm.xla_device()
 
-def tpu_data_loader(itr):
-    import torch_xla.core.xla_model as xm
-    import torch_xla.distributed.parallel_loader as pl
+# def tpu_data_loader(itr):
+#     import torch_xla.core.xla_model as xm
+#     import torch_xla.distributed.parallel_loader as pl
 
-    from fairseq.data import iterators
+#     from fairseq.data import iterators
 
-    xm.rendezvous("tpu_data_loader")  # wait for all workers
-    xm.mark_step()
-    device = xm.xla_device()
-    return iterators.CountingIterator(
-        pl.ParallelLoader(itr, [device]).per_device_loader(device),
-        start=getattr(itr, "n", 0),
-        total=len(itr),
-    )
+#     xm.rendezvous("tpu_data_loader")  # wait for all workers
+#     xm.mark_step()
+#     device = xm.xla_device()
+#     return iterators.CountingIterator(
+#         pl.ParallelLoader(itr, [device]).per_device_loader(device),
+#         start=getattr(itr, "n", 0),
+#         total=len(itr),
+#     )
 
 # device = xm.xla_device()
 # torch.arange(0, 100, device=device)
