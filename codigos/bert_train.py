@@ -13,8 +13,6 @@ from unidecode import unidecode
 import string
 import time
 
-patch_sklearn()
-
 # def move_to_tpu(sample):
 
 #     import torch_xla.core.xla_model as xm
