@@ -164,9 +164,9 @@ token_type_ids = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'token_
 
 output = model_tf([input_ids,attention_mask,token_type_ids])
 output = output[0]
-output = tf.keras.layers.Dense(1028,activation = 'relu')(output)
+output = tf.keras.layers.Dense(128,activation = 'relu')(output)
 output = tf.keras.layers.Dropout(0.2)(output)
-output = tf.keras.layers.Dense(1,activation = 'sigmoid')(output)
+output = tf.keras.layers.Dense(1,activation = 'softmax')(output)
 
 model = tf.keras.models.Model(inputs = [input_ids,attention_mask,token_type_ids],outputs = output)
 # choosing Adam optimizer
