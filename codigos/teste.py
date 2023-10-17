@@ -13,7 +13,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_sc
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
-import torch_xla.core.xla_model as xm
+# import torch_xla.core.xla_model as xm
 from sklearnex import patch_sklearn
 from collections import Counter
 from sklearn.model_selection import RandomizedSearchCV
