@@ -53,7 +53,10 @@ tokenizer = AutoTokenizer.from_pretrained("../bert-base-portuguese-cased")
 # model = AutoModelForMaskedLM.from_pretrained("../bert-base-portuguese-cased")
 
 try:
-    tpu = tf.distribute.cluster_resolver.TPUClusterResolver() # TPU detection
+    # tpu = tf.distribute.cluster_resolver.TPUClusterResolver() # TPU detection
+    tpu = tf.distribute.cluster_resolver.TPUClusterResolver(tpu='local')
+    # tf.tpu.experimental.initialize_tpu_system(cluster_resolver)
+    # tf.distribute.TPUStrategy(cluster_resolver)
 except ValueError: # If TPU not found
     tpu = None
 
