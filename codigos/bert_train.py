@@ -69,16 +69,16 @@ tokenizer = AutoTokenizer.from_pretrained("../bert-base-portuguese-cased")
 #     print('Running on CPU instead')
 # print("Number of accelerators: ", strategy.num_replicas_in_sync)
 
-try:
-    tpu = tf.distribute.cluster_resolver.TPUClusterResolver()#'grpc://10.164.0.30')
-    print('Running on TPU ', tpu.cluster_spec().as_dict())  
-    tf.config.experimental_connect_to_cluster(tpu)
-    tf.tpu.experimental.initialize_tpu_system(tpu)
-    strategy = tf.distribute.experimental.TPUStrategy(tpu)
-    print("Number of accelerators: ", strategy.num_replicas_in_sync)
-except ValueError:
-    strategy = tf.distribute.get_strategy() # for CPU and single GPU
-    print('Number of replicas:', strategy.num_replicas_in_sync)
+#try:
+ #   tpu = tf.distribute.cluster_resolver.TPUClusterResolver()#'grpc://10.164.0.30')
+#    print('Running on TPU ', tpu.cluster_spec().as_dict())  
+  #  tf.config.experimental_connect_to_cluster(tpu)
+ #   tf.tpu.experimental.initialize_tpu_system(tpu)
+ #   strategy = tf.distribute.experimental.TPUStrategy(tpu)
+  #  print("Number of accelerators: ", strategy.num_replicas_in_sync)
+#except ValueError:
+ #   strategy = tf.distribute.get_strategy() # for CPU and single GPU
+  #  print('Number of replicas:', strategy.num_replicas_in_sync)
 
 model_tf = TFBertForSequenceClassification.from_pretrained('../bert-base-portuguese-cased')
 
@@ -163,10 +163,25 @@ print("Done with Testing Dataset",time.time()-start)
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-lr = 2e-2
+
+def gelu(x):
+    """Gaussian Error Linear Unit.
+    This is a smoother version of the RELU.
+    Original paper: https://arxiv.org/abs/1606.08415
+    refer : https://github.com/google-research/bert/blob/bee6030e31e42a9394ac567da170a89a98d2062f/modeling.py#L264
+    Args:
+        x: float Tensor to perform activation.
+    Returns:
+        `x` with the GELU activation applied.
+    """
+    cdf = 0.5 * (1.0 + tf.tanh(
+        (np.sqrt(2 / np.pi) * (x + 0.044715 * tf.pow(x, 3)))))
+    return x * cdf
+    
+lr = 5e-2
 
 def scheduler(epoch, lr):
-  if epoch < 10:
+  if epoch < 30:
     return lr
   else:
     return lr * 0.5#tf.math.exp(-0.1)
@@ -176,17 +191,18 @@ token_type_ids = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'token_
 
 output = model_tf([input_ids,attention_mask,token_type_ids])
 output = output[0]
-output = tf.keras.layers.Dense(128,activation = 'relu')(output)
+output = tf.keras.layers.Dense(512,activation = gelu)(output)
 output = tf.keras.layers.Dropout(0.2)(output)
 output = tf.keras.layers.Dense(1,activation = 'softmax')(output)
 
 model = tf.keras.models.Model(inputs = [input_ids,attention_mask,token_type_ids],outputs = output)
 # choosing Adam optimizer
-optimizer = tf.keras.optimizers.Adam(learning_rate=lr, epsilon=1e-08)
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr, epsilon=1e-07)
 # we do not have one-hot vectors, we can use sparce categorical cross entropy and accuracy
 loss = tf.keras.losses.BinaryFocalCrossentropy()
 metric = tf.keras.metrics.BinaryAccuracy('acc')
-early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=10)
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=30)
+csv_log = tf.keras.callbacks.CSVLogger('training.log')
 #callbacks=[early_stopping]
 callbacks_lr = tf.keras.callbacks.LearningRateScheduler(scheduler)
 checkpoint_filepath = 'modelo_bert_current.h5'
@@ -200,5 +216,5 @@ model_checkpoint_callback = ModelCheckpoint(
     period=3
 )
 model.compile(optimizer=optimizer, loss=loss, metrics=[metric])
-bert_history = model.fit(ds_train_encoded, epochs=100, validation_data=ds_test_encoded, callbacks=[callbacks_lr,model_checkpoint_callback])
-model.save('modelo_bert_100_2voters.h5')
+bert_history = model.fit(ds_train_encoded, epochs=500, validation_data=ds_test_encoded, callbacks=[csv_log,callbacks_lr,model_checkpoint_callback,early_stopping])
+model.save('modelo_bert_500_2voters.h5')
