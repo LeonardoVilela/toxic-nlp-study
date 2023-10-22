@@ -119,7 +119,7 @@ test_size = int(size-train_size)
 ds_train = dataset.take(train_size)
 ds_test = dataset.skip(train_size)
 
-max_lenght = 512
+max_length = 512
 batch_size = 64
 
 def convert_example_to_feature(review):
