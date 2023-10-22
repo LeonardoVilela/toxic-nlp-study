@@ -120,7 +120,7 @@ ds_train = dataset.take(train_size)
 ds_test = dataset.skip(train_size)
 
 max_length = 512
-batch_size = 64
+batch_size = 256
 
 def convert_example_to_feature(review):
     return tokenizer.encode_plus(review,
@@ -192,6 +192,10 @@ token_type_ids = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'token_
 
 output = model_tf([input_ids,attention_mask,token_type_ids])
 output = output[0]
+output = tf.keras.layers.Dense(128,activation = gelu)(output)
+output = tf.keras.layers.Dropout(0.1)(output)
+output = tf.keras.layers.Dense(256,activation = gelu)(output)
+output = tf.keras.layers.Dropout(0.2)(output)
 output = tf.keras.layers.Dense(512,activation = gelu)(output)
 output = tf.keras.layers.Dropout(0.2)(output)
 output = tf.keras.layers.Dense(1,activation = 'softmax')(output)
