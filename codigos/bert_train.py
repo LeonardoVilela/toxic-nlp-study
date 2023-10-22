@@ -179,10 +179,10 @@ def gelu(x):
         (np.sqrt(2 / np.pi) * (x + 0.044715 * tf.pow(x, 3)))))
     return x * cdf
     
-lr = 5e-2
+lr = 1e-1
 
 def scheduler(epoch, lr):
-  if epoch < 30:
+  if epoch < 15:
     return lr
   else:
     return lr * 0.5#tf.math.exp(-0.1)
