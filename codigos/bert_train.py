@@ -12,6 +12,7 @@ import tensorflow as tf
 from unidecode import unidecode
 import string
 import time
+import tensorflow_datasets as tfds
 
 # def move_to_tpu(sample):
 
