@@ -203,10 +203,11 @@ output = tf.keras.layers.Dense(1,activation = 'softmax')(output)
 model = tf.keras.models.Model(inputs = [input_ids,attention_mask,token_type_ids],outputs = output)
 # choosing Adam optimizer
 optimizer = tf.keras.optimizers.Adam(learning_rate=lr, epsilon=1e-07)
+optimizer2 = tf.keras.optimizers.AdamW(learning_rate=lr,weight_decay=0.004,epsilon=1e-07)
 # we do not have one-hot vectors, we can use sparce categorical cross entropy and accuracy
 loss = tf.keras.losses.BinaryFocalCrossentropy()
 metric = tf.keras.metrics.BinaryAccuracy('acc')
-early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=30)
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=300)
 csv_log = tf.keras.callbacks.CSVLogger('training.log')
 #callbacks=[early_stopping]
 callbacks_lr = tf.keras.callbacks.LearningRateScheduler(scheduler)
@@ -221,5 +222,8 @@ model_checkpoint_callback = ModelCheckpoint(
     period=3
 )
 model.compile(optimizer=optimizer, loss=loss, metrics=[metric])
-bert_history = model.fit(ds_train_encoded, epochs=500, validation_data=ds_test_encoded, callbacks=[csv_log,callbacks_lr,model_checkpoint_callback,early_stopping])
-model.save('modelo_bert_500_2voters.h5')
+bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,callbacks_lr,model_checkpoint_callback,early_stopping])
+model.save('modelo_bert_2000_adam_2voters.h5')
+model.compile(optimizer=optimizer2, loss=loss, metrics=[metric])
+bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,callbacks_lr,model_checkpoint_callback,early_stopping])
+model.save('modelo_bert_2000_adamw_2voters.h5')
