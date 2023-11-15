@@ -222,8 +222,8 @@ model_checkpoint_callback = ModelCheckpoint(
     period=3
 )
 model.compile(optimizer=optimizer, loss=loss, metrics=[metric])
-bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,callbacks_lr,model_checkpoint_callback,early_stopping])
+bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
 model.save('modelo_bert_2000_adam_2voters.h5')
 model.compile(optimizer=optimizer2, loss=loss, metrics=[metric])
-bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,callbacks_lr,model_checkpoint_callback,early_stopping])
+bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
 model.save('modelo_bert_2000_adamw_2voters.h5')
