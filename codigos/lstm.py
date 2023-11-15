@@ -119,9 +119,11 @@ from tensorflow.keras import Sequential
 horizon = 3
 clf = Sequential()
 clf.add(LSTM(30, activation='tanh', input_shape=(X_test.shape[1],1)))
-clf.add(Dense(units=horizon, activation='tanh'))
-clf.compile(loss='mean_squared_error', optimizer='adam')
-clf.fit(X_test, y_test, epochs=20, batch_size=1, verbose=2)
+clf.add(Dense(units=64, activation='tanh'))
+clf.add(Dense(units=128, activation='tanh'))
+clf.add(Dense(1,activation = 'softmax'))
+clf.compile(loss='BinaryFocalCrossentropy', optimizer='adam')
+clf.fit(X_train, y_train, epochs=1000, batch_size=32, verbose=2)
 
 # save model
 # clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
