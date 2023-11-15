@@ -129,7 +129,7 @@ train = train.batch(64)
 
 test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 test_dataset = test_dataset.batch(64)
-clf.fit(train, epochs=250, batch_size=32,validation_data=test_dataset,callbacks=tf.keras.callbacks.EarlyStopping(monitor='acc', patience=50))
+clf.fit(train, epochs=15, batch_size=32,validation_data=test_dataset,callbacks=tf.keras.callbacks.EarlyStopping(monitor='acc', patience=50))
 
 # save model
 # clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
