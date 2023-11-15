@@ -117,8 +117,6 @@ X_test,y_test=teste_tokens(df_told,999)
 # np.savetxt('X_test.txt',X_test)
 n_iter = 15
 
-c = stats.uniform(2, 10)
-gamma = stats.uniform(0.1, 1)
 early_stop_flag = 0
 random_dict_rf = {'c': [],
                'gamma': [],
@@ -132,9 +130,9 @@ for i in range(n_iter):
             early_stop_flag+=1
     if early_stop_flag >=5:
         break
-    c_ = np.random.choice(c)
+    c_ = np.random.uniform(2,10, 1000)
     random_dict_rf['c'].append(c)
-    gamma_ = np.random.choice(gamma)
+    gamma_ =  np.random.uniform(0.1,1, 1000)
     random_dict_rf['gamma'].append(gamma_)
     random_grid = {'C':c_,
                    'gamma': gamma_}
