@@ -131,7 +131,7 @@ for i in range(n_iter):
     if early_stop_flag >=5:
         break
     c_ = np.random.uniform(2,10, 1000)
-    random_dict_rf['c'].append(c)
+    random_dict_rf['c'].append(c_)
     gamma_ =  np.random.uniform(0.1,1, 1000)
     random_dict_rf['gamma'].append(gamma_)
     random_grid = {'C':c_,
