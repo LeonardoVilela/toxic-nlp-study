@@ -130,9 +130,9 @@ for i in range(n_iter):
             early_stop_flag+=1
     if early_stop_flag >=5:
         break
-    c_ = np.random.uniform(2,10, 1000)
+    c_ = np.random.choice(np.random.uniform(2,10, 1000))
     random_dict_rf['c'].append(c_)
-    gamma_ =  np.random.uniform(0.1,1, 1000)
+    gamma_ =  np.random.choice(np.random.uniform(0.1,1, 1000))
     random_dict_rf['gamma'].append(gamma_)
     random_grid = {'C':c_,
                    'gamma': gamma_}
