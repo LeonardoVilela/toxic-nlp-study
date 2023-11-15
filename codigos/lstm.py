@@ -122,8 +122,13 @@ clf.add(LSTM(30, activation='tanh', input_shape=(X_test.shape[1],1)))
 clf.add(Dense(units=64, activation='tanh'))
 clf.add(Dense(units=128, activation='tanh'))
 clf.add(Dense(1,activation = 'softmax'))
-clf.compile(loss='BinaryFocalCrossentropy', optimizer='adam')
-clf.fit(X_train, y_train, epochs=1000, batch_size=32, verbose=2)
+clf.compile(loss='BinaryFocalCrossentropy', optimizer='adam',metrics = ['acc'])
+train = tf.data.Dataset.from_tensor_slices((X_train, y_train))
+train = train.batch(64)
+
+test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
+test_dataset = test_dataset.batch(64)
+clf.fit(train, epochs=500, batch_size=32,validation_data=test_dataset,callbacks=tf.keras.callbacks.EarlyStopping(monitor='acc', patience=50))
 
 # save model
 # clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
