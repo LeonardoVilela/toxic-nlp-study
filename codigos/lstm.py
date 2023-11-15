@@ -22,6 +22,7 @@ from sklearn.model_selection import RandomizedSearchCV
 import xgboost
 import pickle
 import joblib
+import tensorflow as tf
 
 patch_sklearn()
 
