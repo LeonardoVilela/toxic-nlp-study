@@ -123,7 +123,7 @@ clf.add(LSTM(30, activation='tanh', input_shape=(X_test.shape[1],1)))
 clf.add(Dense(units=64, activation='tanh'))
 clf.add(Dense(units=128, activation='tanh'))
 clf.add(Dense(1,activation = 'softmax'))
-clf.compile(loss='BinaryFocalCrossentropy', optimizer='adam',metrics = ['acc'])
+clf.compile(loss='BinaryFocalCrossentropy', optimizer='adam',metrics = ['f1_macro'])
 train = tf.data.Dataset.from_tensor_slices((X_train, y_train))
 train = train.batch(64)
 
@@ -133,8 +133,9 @@ clf.fit(train, epochs=15, batch_size=32,validation_data=test_dataset,callbacks=t
 
 # save model
 # clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
-pickle.dump(clf, open("LSTM_model.sav", "wb"))
+clf.save('lstm.h5')
 y_pred = clf.predict(X_test)
+print(y_pred.shape)
 print('Precision: %.3f' % precision_score(y_test, y_pred))
 print('Recall: %.3f' % recall_score(y_test, y_pred))
 print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
