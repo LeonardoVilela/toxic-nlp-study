@@ -1,0 +1,48 @@
+Intel(R) Extension for Scikit-learn* enabled (https://github.com/intel/scikit-learn-intelex)
+Some weights of the model checkpoint at ../bert-base-portuguese-cased were not used when initializing BertForMaskedLM: ['cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'bert.pooler.dense.bias', 'bert.pooler.dense.weight']
+- This IS expected if you are initializing BertForMaskedLM from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForMaskedLM from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+tcmalloc: large alloc 1222598656 bytes == 0x44836000 @  0x7fc69f165680 0x7fc69f185da2 0x7fc69e0ac73b 0x7fc69e1a7a6e 0x7fc69e1a6c47 0x51bef7 0x51bde1 0x50ed83 0x5c83fe 0x5c7aff 0x5e87b7 0x5e4df0 0x5f90e2 0x5f86cf 0x5f8423 0x5f2f9e 0x5b6f49 0x7fc69edfb083 0x5b6d9f
+tcmalloc: large alloc 1528250368 bytes == 0x8d62c000 @  0x7fc69f165680 0x7fc69f185da2 0x7fc69e0ac73b 0x7fc69e1a7a6e 0x7fc69e1a6c47 0x51bef7 0x51bde1 0x50ed83 0x5c83fe 0x5c7aff 0x5e87b7 0x5e4df0 0x5f90e2 0x5f86cf 0x5f8423 0x5f2f9e 0x5b6f49 0x7fc69edfb083 0x5b6d9f
+tcmalloc: large alloc 1910317056 bytes == 0xf2752000 @  0x7fc69f165680 0x7fc69f185da2 0x7fc69e0ac73b 0x7fc69e1a7a6e 0x7fc69e1a6c47 0x51bef7 0x51bde1 0x50ed83 0x5c83fe 0x5c7aff 0x5e87b7 0x5e4df0 0x5f90e2 0x5f86cf 0x5f8423 0x5f2f9e 0x5b6f49 0x7fc69edfb083 0x5b6d9f
+tcmalloc: large alloc 2387902464 bytes == 0x44836000 @  0x7fc69f165680 0x7fc69f185da2 0x7fc69e0ac73b 0x7fc69e1a7a6e 0x7fc69e1a6c47 0x51bef7 0x51bde1 0x50ed83 0x5c83fe 0x5c7aff 0x5e87b7 0x5e4df0 0x5f90e2 0x5f86cf 0x5f8423 0x5f2f9e 0x5b6f49 0x7fc69edfb083 0x5b6d9f
+tcmalloc: large alloc 1817198592 bytes == 0x164524000 @  0x7fc69f165680 0x7fc69f186824 0x7fc69e0abd84 0x7fc69e0ac51f 0x7fc69e0cc77e 0x7fc69e0cf104 0x7fc69e118e3b 0x51bef7 0x4c60d8 0x7fc55729c11e 0x7fc5572bbc1b 0x525d17 0x53f07c 0x517983 0x534f13 0x51290a 0x5c83fe 0x5c7aff 0x5e87b7 0x5e4df0 0x5f90e2 0x5f86cf 0x5f8423 0x5f2f9e 0x5b6f49 0x7fc69edfb083 0x5b6d9f
+told acquired
+[0 1]
+told bin acquired
+Counter({0: 3816, 1: 3816})
+(7632, 29794)
+X_train acquired
+<class 'numpy.ndarray'>
+(1998, 29794)
+X_test acquired
+iteration:0, early stopping = 0
+SVC model acquired
+Accuracy: 0.512
+F1 Score: 0.047
+iteration:1, early stopping = 0
+SVC model acquired
+Accuracy: 0.512
+F1 Score: 0.047
+iteration:2, early stopping = 0
+SVC model acquired
+Accuracy: 0.512
+F1 Score: 0.047
+iteration:3, early stopping = 1
+SVC model acquired
+Accuracy: 0.512
+F1 Score: 0.047
+iteration:4, early stopping = 2
+SVC model acquired
+Accuracy: 0.512
+F1 Score: 0.047
+iteration:5, early stopping = 3
+SVC model acquired
+Accuracy: 0.512
+F1 Score: 0.047
+iteration:6, early stopping = 4
+Traceback (most recent call last):
+  File "/home/l220198/toxic-nlp-study/codigos/svc.py", line 156, in <module>
+    n_estimators = random_dict_rf['n_estimators'][best_iter]
+                   ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'n_estimators'
