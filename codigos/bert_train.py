@@ -94,8 +94,8 @@ for i in range(len(df_told_full)):
 print(np.unique(y))
 df_told_full['bin_class'] = y
 
-df_sub_a = df_told_full[df_told_full['bin_class']==0].iloc[0:4816]
-df_sub_b = df_told_full[df_told_full['bin_class']==1].iloc[0:4816]
+df_sub_a = df_told_full[df_told_full['bin_class']==0].iloc[0:500]
+df_sub_b = df_told_full[df_told_full['bin_class']==1].iloc[0:500]
 df_balanced_told = pd.concat([df_sub_a,df_sub_b])
 
 def preprocess_text(text):
@@ -222,8 +222,8 @@ model_checkpoint_callback = ModelCheckpoint(
     period=3
 )
 model.compile(optimizer=optimizer, loss=loss, metrics=[metric])
-bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
+bert_history = model.fit(ds_train_encoded, epochs=15, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
 model.save('modelo_bert_2000_adam_2voters.h5')
 model.compile(optimizer=optimizer2, loss=loss, metrics=[metric])
-bert_history = model.fit(ds_train_encoded, epochs=2000, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
+bert_history = model.fit(ds_train_encoded, epochs=15, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
 model.save('modelo_bert_2000_adamw_2voters.h5')
