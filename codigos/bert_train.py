@@ -226,7 +226,7 @@ def scheduler(epoch, lr):
 # bert_history = model.fit(ds_train_encoded, epochs=15, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
 # model.save('modelo_bert_2000_adamw_2voters.h5')
 model = tf.keras.models.load_model("modelo_bert_2000_adamw_2voters.h5", custom_objects={"TFBertForSequenceClassification": TFBertForSequenceClassification})
-y_pred = model.predict(X_test)
+y_pred = model.predict(ds_train_encoded)
 print(y_pred.shape)
 print('Precision: %.3f' % precision_score(y_test, y_pred))
 print('Recall: %.3f' % recall_score(y_test, y_pred))
@@ -277,22 +277,3 @@ ax =sns.heatmap(conf_matrix, annot=True)
 
 # save the plot as PDF file
 plt.savefig("confusionmatrix_hate_LSTM_rs.png", format='png')
-
-X_test_hate_sub = list(df_sub_hate['text'])
-_instance =BertTokenizer(text=X_test_hate_sub)
-X_test_hate_sub = _instance.get()
-y_test_sub = list(df_sub_hate['hatespeech_comb'])
-
-y_pred = clf.predict(X_test_hate_sub)
-
-print('Precision: %.3f' % precision_score(y_test_sub, y_pred))
-print('Recall: %.3f' % recall_score(y_test_sub, y_pred))
-print('Accuracy: %.3f' % accuracy_score(y_test_sub, y_pred))
-print('F1 Score: %.3f' % f1_score(y_test_sub, y_pred))
-
-conf_matrix = confusion_matrix(y_true=y_test_sub, y_pred=y_pred)
-#plt.figure(figsize = (10,7))
-ax =sns.heatmap(conf_matrix, annot=True)
-
-# save the plot as PDF file
-plt.savefig("confusionmatrix_hate_sub1000_LSTM_rs.png", format='png')
