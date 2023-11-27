@@ -228,12 +228,12 @@ def scheduler(epoch, lr):
 model = tf.keras.models.load_model("modelo_bert_2000_adamw_2voters.h5", custom_objects={"TFBertForSequenceClassification": TFBertForSequenceClassification})
 y_pred = model.predict(ds_train_encoded)
 print(y_pred.shape)
-print('Precision: %.3f' % precision_score(y_test, y_pred))
-print('Recall: %.3f' % recall_score(y_test, y_pred))
-print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+print('Precision: %.3f' % precision_score(df_balanced_told['bin_class'], y_pred))
+print('Recall: %.3f' % recall_score(df_balanced_told['bin_class'], y_pred))
+print('Accuracy: %.3f' % accuracy_score(df_balanced_told['bin_class'], y_pred))
+print('F1 Score: %.3f' % f1_score(df_balanced_told['bin_class'], y_pred))
 
-conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+conf_matrix = confusion_matrix(y_true=df_balanced_told['bin_class'], y_pred=y_pred)
 plt.figure(figsize = (10,7))
 sns.heatmap(conf_matrix, annot=True)
 
@@ -266,12 +266,12 @@ print("Done with Training Dataset",time.time()-start)
 y_pred = clf.predict(ds_train_encoded)
 
 
-print('Precision: %.3f' % precision_score(y_test, y_pred))
-print('Recall: %.3f' % recall_score(y_test, y_pred))
-print('Accuracy: %.3f' % accuracy_score(y_test, y_pred))
-print('F1 Score: %.3f' % f1_score(y_test, y_pred))
+print('Precision: %.3f' % precision_score(df_sub_hate['hatespeech_comb'], y_pred))
+print('Recall: %.3f' % recall_score(df_sub_hate['hatespeech_comb'], y_pred))
+print('Accuracy: %.3f' % accuracy_score(df_sub_hate['hatespeech_comb'], y_pred))
+print('F1 Score: %.3f' % f1_score(df_sub_hate['hatespeech_comb'], y_pred))
 
-conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+conf_matrix = confusion_matrix(y_true=df_sub_hate['hatespeech_comb'], y_pred=y_pred)
 #plt.figure(figsize = (10,7))
 ax =sns.heatmap(conf_matrix, annot=True)
 
