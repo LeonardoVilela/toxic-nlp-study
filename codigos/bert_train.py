@@ -49,6 +49,7 @@ import tensorflow_datasets as tfds
 
 from transformers import AutoTokenizer, AutoModelForMaskedLM,TFBertForSequenceClassification
 
+
 tokenizer = AutoTokenizer.from_pretrained("../bert-base-portuguese-cased")
 
 # model = AutoModelForMaskedLM.from_pretrained("../bert-base-portuguese-cased")
@@ -224,7 +225,7 @@ def scheduler(epoch, lr):
 # model.compile(optimizer=optimizer2, loss=loss, metrics=[metric])
 # bert_history = model.fit(ds_train_encoded, epochs=15, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
 # model.save('modelo_bert_2000_adamw_2voters.h5')
-model = tf.keras.models.load_model("modelo_bert_2000_adamw_2voters.h5")
+model = tf.keras.models.load_model("modelo_bert_2000_adamw_2voters.h5", custom_objects={"TFBertForSequenceClassification": TFBertForSequenceClassification})
 y_pred = model.predict(X_test)
 print(y_pred.shape)
 print('Precision: %.3f' % precision_score(y_test, y_pred))
