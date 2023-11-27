@@ -1,3 +1,5 @@
 X_train.txt
 X_test.txt
 bert-base-portuguese-cased/
+*.h5
+*.sav
