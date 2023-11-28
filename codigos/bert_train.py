@@ -158,6 +158,9 @@ def encode_examples(ds, limit=-1):
 start=time.time()
 ds_train_encoded = encode_examples(ds_train).shuffle(10000).batch(batch_size)
 print("Done with Training Dataset",time.time()-start)
+start=time.time()
+ds_test_encoded = encode_examples(ds_test).shuffle(10000).batch(batch_size)
+print("Done with Training Dataset",time.time()-start)
 
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint
