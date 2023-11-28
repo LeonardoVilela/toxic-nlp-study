@@ -95,8 +95,8 @@ for i in range(len(df_told_full)):
 print(np.unique(y))
 df_told_full['bin_class'] = y
 
-df_sub_a = df_told_full[df_told_full['bin_class']==0].iloc[0:50]
-df_sub_b = df_told_full[df_told_full['bin_class']==1].iloc[0:50]
+df_sub_a = df_told_full[df_told_full['bin_class']==0].iloc[0:3816]
+df_sub_b = df_told_full[df_told_full['bin_class']==1].iloc[0:3816]
 df_balanced_told = pd.concat([df_sub_a,df_sub_b])
 
 def preprocess_text(text):
@@ -115,10 +115,10 @@ def preprocess_text(text):
 df_balanced_told['text'] = df_balanced_told['text'].apply(preprocess_text)
 dataset = tf.data.Dataset.from_tensor_slices((df_balanced_told['text'],df_balanced_told['bin_class']))
 size = dataset.cardinality().numpy()
-train_size = int(1*size)
-# test_size = int(size-train_size)
+train_size = int(0.85*size)
+test_size = int(size-train_size)
 ds_train = dataset.take(train_size)
-# ds_test = dataset.skip(train_size)
+ds_test = dataset.skip(train_size)
 
 max_length = 512
 batch_size = 256
@@ -254,10 +254,10 @@ print(f"sub: {counts}")
 
 dataset = tf.data.Dataset.from_tensor_slices((df_sub_hate['text'],df_sub_hate['hatespeech_comb']))
 size = dataset.cardinality().numpy()
-train_size = int(1*size)
-# test_size = int(size-train_size)
+train_size = int(0.85*size)
+test_size = int(size-train_size)
 ds_train = dataset.take(train_size)
-# ds_test = dataset.skip(train_size)
+ds_test = dataset.skip(train_size)
 start=time.time()
 ds_train_encoded = encode_examples(ds_train).shuffle(10000).batch(batch_size)
 print("Done with Training Dataset",time.time()-start)
