@@ -184,47 +184,47 @@ def scheduler(epoch, lr):
     return lr
   else:
     return lr * 0.5#tf.math.exp(-0.1)
-# input_ids = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'input_ids')
-# attention_mask = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'attention_mask')
-# token_type_ids = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'token_type_ids')
+input_ids = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'input_ids')
+attention_mask = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'attention_mask')
+token_type_ids = tf.keras.Input(shape=(max_length,),dtype='int32',name = 'token_type_ids')
 
-# output = model_tf([input_ids,attention_mask,token_type_ids])
-# output = output[0]
-# output = tf.keras.layers.Dense(128,activation = gelu)(output)
-# output = tf.keras.layers.Dropout(0.1)(output)
-# output = tf.keras.layers.Dense(256,activation = gelu)(output)
-# output = tf.keras.layers.Dropout(0.2)(output)
-# output = tf.keras.layers.Dense(512,activation = gelu)(output)
-# output = tf.keras.layers.Dropout(0.2)(output)
-# output = tf.keras.layers.Dense(1,activation = 'softmax')(output)
+output = model_tf([input_ids,attention_mask,token_type_ids])
+output = output[0]
+output = tf.keras.layers.Dense(128,activation = gelu)(output)
+output = tf.keras.layers.Dropout(0.1)(output)
+output = tf.keras.layers.Dense(256,activation = gelu)(output)
+output = tf.keras.layers.Dropout(0.2)(output)
+output = tf.keras.layers.Dense(512,activation = gelu)(output)
+output = tf.keras.layers.Dropout(0.2)(output)
+output = tf.keras.layers.Dense(1,activation = 'softmax')(output)
 
-# model = tf.keras.models.Model(inputs = [input_ids,attention_mask,token_type_ids],outputs = output)
-# # choosing Adam optimizer
-# optimizer = tf.keras.optimizers.Adam(learning_rate=lr, epsilon=1e-07)
-# optimizer2 = tf.keras.optimizers.AdamW(learning_rate=lr,weight_decay=0.004,epsilon=1e-07)
-# # we do not have one-hot vectors, we can use sparce categorical cross entropy and accuracy
-# loss = tf.keras.losses.BinaryFocalCrossentropy()
-# metric = tf.keras.metrics.BinaryAccuracy('acc')
-# early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=300)
-# csv_log = tf.keras.callbacks.CSVLogger('training.log')
-# #callbacks=[early_stopping]
-# callbacks_lr = tf.keras.callbacks.LearningRateScheduler(scheduler)
-# checkpoint_filepath = 'modelo_bert_current.h5'
-# model_checkpoint_callback = ModelCheckpoint(
-#     filepath=checkpoint_filepath,
-#     monitor='val_loss',
-#     save_best_only=False,
-#     save_weights_only=False,
-#     mode='min',
-#     save_freq='epoch',
-#     period=3
-# )
-# model.compile(optimizer=optimizer, loss=loss, metrics=[metric])
-# bert_history = model.fit(ds_train_encoded, epochs=15, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
-# model.save('modelo_bert_2000_adam_2voters.h5')
-# model.compile(optimizer=optimizer2, loss=loss, metrics=[metric])
-# bert_history = model.fit(ds_train_encoded, epochs=15, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
-# model.save('modelo_bert_2000_adamw_2voters.h5')
+model = tf.keras.models.Model(inputs = [input_ids,attention_mask,token_type_ids],outputs = output)
+# choosing Adam optimizer
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr, epsilon=1e-07)
+optimizer2 = tf.keras.optimizers.AdamW(learning_rate=lr,weight_decay=0.004,epsilon=1e-07)
+# we do not have one-hot vectors, we can use sparce categorical cross entropy and accuracy
+loss = tf.keras.losses.BinaryFocalCrossentropy()
+metric = tf.keras.metrics.BinaryAccuracy('acc')
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=300)
+csv_log = tf.keras.callbacks.CSVLogger('training.log')
+#callbacks=[early_stopping]
+callbacks_lr = tf.keras.callbacks.LearningRateScheduler(scheduler)
+checkpoint_filepath = 'modelo_bert_current.h5'
+model_checkpoint_callback = ModelCheckpoint(
+    filepath=checkpoint_filepath,
+    monitor='val_loss',
+    save_best_only=False,
+    save_weights_only=False,
+    mode='min',
+    save_freq='epoch',
+    period=3
+)
+model.compile(optimizer=optimizer, loss=loss, metrics=[metric])
+bert_history = model.fit(ds_train_encoded, epochs=1, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
+model.save('modelo_bert_2000_adam_2voters.h5')
+model.compile(optimizer=optimizer2, loss=loss, metrics=[metric])
+bert_history = model.fit(ds_train_encoded, epochs=1, validation_data=ds_test_encoded, callbacks=[csv_log,model_checkpoint_callback,early_stopping])
+model.save('modelo_bert_2000_adamw_2voters.h5')
 model = tf.keras.models.load_model("modelo_bert_2000_adamw_2voters.h5", custom_objects={"TFBertForSequenceClassification": TFBertForSequenceClassification})
 y_pred = model.predict(ds_train_encoded)
 print(y_pred.shape)
