@@ -130,7 +130,7 @@ train = train.batch(64)
 
 test_dataset = tf.data.Dataset.from_tensor_slices((X_test.astype(np.float32), y_test.astype(np.float32)))
 test_dataset = test_dataset.batch(64)
-clf.fit(train, epochs=15, batch_size=64,validation_data=test_dataset)
+clf.fit(train, epochs=1, batch_size=64,validation_data=test_dataset)
 
 # save model
 # clf = pickle.load(open('rf_model_nors.pickle', 'rb'))
